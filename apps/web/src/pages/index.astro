@@ -1,5 +1,7 @@
 ---
-
+import { Card } from '@repo/ui/card';
+import { TurborepoLogo } from '@repo/ui/turborepo-logo';
+import '@repo/ui/styles.css';
 ---
 
 <html lang="en">
@@ -8,9 +10,22 @@
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="viewport" content="width=device-width" />
 		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
+		<title>Cosmic Garden - Web</title>
 	</head>
-	<body>
-		<h1>Astro</h1>
+	<body class="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white flex flex-col items-center justify-center p-8">
+		<div class="text-center mb-8">
+			<TurborepoLogo client:load />
+			<h1 class="text-4xl font-bold mt-4">Cosmic Garden Web</h1>
+			<p class="text-gray-400 mt-2">Built with Astro + Turborepo</p>
+		</div>
+		
+		<div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl">
+			<Card title="Documentation" href="https://turbo.build/repo/docs" client:load>
+				Find in-depth information about Turborepo features and API.
+			</Card>
+			<Card title="Learn" href="https://turbo.build/repo/docs/getting-started" client:load>
+				Learn more about Turborepo in an interactive course.
+			</Card>
+		</div>
 	</body>
 </html>
