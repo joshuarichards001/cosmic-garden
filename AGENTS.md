@@ -11,8 +11,8 @@ Cosmic Garden is a pnpm monorepo managed by Turborepo containing multiple apps a
 ```
 cosmic-garden/
 ├── apps/
-│   ├── web/          # Astro + React app
-│   └── write/        # Vite + React app (rolldown-vite)
+│   ├── web/          # Astro + React website with Cosmic Garden content
+│   └── write/        # Vite + React (rolldown-vite) writing app
 ├── packages/
 │   ├── ui/           # Shared React component library (@repo/ui)
 │   ├── eslint-config/    # Shared ESLint configs (@repo/eslint-config)
