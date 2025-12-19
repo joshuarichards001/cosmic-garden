@@ -4,7 +4,7 @@ const STORAGE_KEY = 'write-content'
 
 export function useFileManager(
     editorRef: React.RefObject<HTMLDivElement | null>,
-    centerCursor?: () => void
+    containerRef: React.RefObject<HTMLDivElement | null>,
 ) {
     const fileInputRef = useRef<HTMLInputElement>(null)
 
@@ -28,17 +28,19 @@ export function useFileManager(
         file.text().then((text) => {
             editorRef.current!.innerText = text
             localStorage.setItem(STORAGE_KEY, editorRef.current!.innerHTML)
-            // Move cursor to end and center
+            // Move cursor to end and scroll to bottom
             const range = document.createRange()
             const sel = window.getSelection()
             range.selectNodeContents(editorRef.current!)
             range.collapse(false)
             sel?.removeAllRanges()
             sel?.addRange(range)
-            setTimeout(() => centerCursor?.(), 0)
+            if (containerRef.current) {
+                containerRef.current.scrollTop = containerRef.current.scrollHeight
+            }
         })
         e.target.value = ''
-    }, [editorRef, centerCursor])
+    }, [editorRef, containerRef])
 
     const handleInput = useCallback(() => {
         if (editorRef.current) {
@@ -56,6 +58,16 @@ export function useFileManager(
     useEffect(() => {
         if (editorRef.current) {
             editorRef.current.innerHTML = localStorage.getItem(STORAGE_KEY) || ''
+            // Move cursor to end and scroll to bottom on initial load
+            const range = document.createRange()
+            const sel = window.getSelection()
+            range.selectNodeContents(editorRef.current)
+            range.collapse(false)
+            sel?.removeAllRanges()
+            sel?.addRange(range)
+            if (containerRef.current) {
+                containerRef.current.scrollTop = containerRef.current.scrollHeight
+            }
         }
         const handleKeyDown = (e: KeyboardEvent) => {
             if (e.ctrlKey || e.metaKey) {
@@ -70,7 +82,7 @@ export function useFileManager(
         }
         window.addEventListener('keydown', handleKeyDown)
         return () => window.removeEventListener('keydown', handleKeyDown)
-    }, [save, importFile, editorRef])
+    }, [save, importFile, editorRef, containerRef])
 
     return {
         fileInputRef,

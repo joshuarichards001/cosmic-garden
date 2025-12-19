@@ -93,6 +93,4 @@ export function useCursorCentering(
             }
         }
     }, [containerRef, editorRef, centerCursor, resumeCentering])
-
-    return { centerCursor }
 }
