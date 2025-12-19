@@ -2,7 +2,10 @@ import { useCallback, useEffect, useRef } from 'react'
 
 const STORAGE_KEY = 'write-content'
 
-export function useFileManager(editorRef: React.RefObject<HTMLDivElement | null>) {
+export function useFileManager(
+    editorRef: React.RefObject<HTMLDivElement | null>,
+    centerCursor?: () => void
+) {
     const fileInputRef = useRef<HTMLInputElement>(null)
 
     const save = useCallback(() => {
@@ -25,9 +28,17 @@ export function useFileManager(editorRef: React.RefObject<HTMLDivElement | null>
         file.text().then((text) => {
             editorRef.current!.innerText = text
             localStorage.setItem(STORAGE_KEY, editorRef.current!.innerHTML)
+            // Move cursor to end and center
+            const range = document.createRange()
+            const sel = window.getSelection()
+            range.selectNodeContents(editorRef.current!)
+            range.collapse(false)
+            sel?.removeAllRanges()
+            sel?.addRange(range)
+            setTimeout(() => centerCursor?.(), 0)
         })
         e.target.value = ''
-    }, [editorRef])
+    }, [editorRef, centerCursor])
 
     const handleInput = useCallback(() => {
         if (editorRef.current) {

@@ -1,15 +1,18 @@
 import '@repo/ui/styles.css'
 import { useRef } from 'react'
+import { useCursorCentering } from './useCursorCentering'
 import { useFileManager } from './useFileManager'
 
 function App() {
   const editorRef = useRef<HTMLDivElement>(null)
-  const { fileInputRef, save, importFile, handleFileChange, handleInput } = useFileManager(editorRef)
+  const containerRef = useRef<HTMLDivElement>(null)
+  const { centerCursor } = useCursorCentering(editorRef, containerRef)
+  const { fileInputRef, save, importFile, handleFileChange, handleInput } = useFileManager(editorRef, centerCursor)
 
   return (
     <div className="h-full bg-writer-bg-light dark:bg-writer-bg-dark text-writer-text-light dark:text-writer-text-dark flex flex-col font-mono">
       <input ref={fileInputRef} type="file" accept=".txt" onChange={handleFileChange} className="hidden" />
-      <div className="flex-1 overflow-y-auto flex justify-center items-center">
+      <div ref={containerRef} className="flex-1 overflow-y-auto flex justify-center">
         <div
           ref={editorRef}
           contentEditable
