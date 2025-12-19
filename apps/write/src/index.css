@@ -1,1 +1,7 @@
 @import "@repo/tailwind-config";
+
+html,
+body,
+#root {
+  height: 100%;
+}

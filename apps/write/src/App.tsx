@@ -1,54 +1,33 @@
-import { useState } from 'react'
-import { Card } from '@repo/ui/card'
-import { TurborepoLogo } from '@repo/ui/turborepo-logo'
-import { Gradient } from '@repo/ui/gradient'
 import '@repo/ui/styles.css'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { useRef } from 'react'
+import { useFileManager } from './useFileManager'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const editorRef = useRef<HTMLDivElement>(null)
+  const { fileInputRef, save, importFile, handleFileChange, handleInput } = useFileManager(editorRef)
 
   return (
-    <div className="min-h-screen bg-neutral-900 text-white/90 flex flex-col items-center justify-center p-8">
-      <div className="relative">
-        <Gradient className="top-[-500px] opacity-[0.15] w-[1000px] h-[1000px]" conic />
+    <div className="h-full bg-writer-bg-light dark:bg-writer-bg-dark text-writer-text-light dark:text-writer-text-dark flex flex-col font-mono">
+      <input ref={fileInputRef} type="file" accept=".txt" onChange={handleFileChange} className="hidden" />
+      <div className="flex-1 overflow-y-auto flex justify-center items-start pt-16">
+        <div
+          ref={editorRef}
+          contentEditable
+          onInput={handleInput}
+          className="w-full max-w-[650px] outline-none text-base leading-[1.8] px-8 caret-writer-cursor"
+          style={{
+            minHeight: '1.5em',
+          }}
+        />
       </div>
-      <div>
-        <TurborepoLogo />
-      </div>
-      <h1 className="text-5xl font-bold leading-tight mt-4">Cosmic Garden Write</h1>
-      <p className="text-gray-500 mt-2">Built with Vite + React + Turborepo</p>
-      
-      <div className="flex gap-4 mt-6">
-        <a href="https://vite.dev" target="_blank" rel="noreferrer" className="group">
-          <img src={viteLogo} className="h-24 p-6 transition-all duration-300 group-hover:drop-shadow-[0_0_2em_#646cffaa]" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank" rel="noreferrer" className="group">
-          <img src={reactLogo} className="h-24 p-6 transition-all duration-300 group-hover:drop-shadow-[0_0_2em_#61dafbaa] animate-spin-slow" alt="React logo" />
-        </a>
-      </div>
-      
-      <div className="p-8">
-        <button 
-          onClick={() => setCount((count) => count + 1)}
-          className="rounded-lg border border-transparent bg-neutral-800 px-5 py-3 font-medium cursor-pointer transition-colors hover:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-        >
-          count is {count}
+      <footer className="flex gap-2 p-4 justify-center border-t border-writer-border-light dark:border-writer-border-dark">
+        <button onClick={importFile} className="bg-writer-button-bg-light hover:bg-writer-button-bg-light-hover dark:bg-writer-button-bg-dark dark:hover:bg-writer-button-bg-dark-hover text-writer-button-text-light dark:text-writer-button-text-dark px-4 py-2 rounded text-sm">
+          Import
         </button>
-        <p className="mt-4">
-          Edit <code className="bg-neutral-800 px-2 py-1 rounded">src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      
-      <div className="flex gap-4 mt-8">
-        <Card title="Documentation" href="https://turbo.build/repo/docs">
-          Find in-depth information about Turborepo features and API.
-        </Card>
-        <Card title="Learn" href="https://turbo.build/repo/docs/getting-started">
-          Learn more about Turborepo in an interactive course.
-        </Card>
-      </div>
+        <button onClick={save} className="bg-writer-button-bg-light hover:bg-writer-button-bg-light-hover dark:bg-writer-button-bg-dark dark:hover:bg-writer-button-bg-dark-hover text-writer-button-text-light dark:text-writer-button-text-dark px-4 py-2 rounded text-sm">
+          Save
+        </button>
+      </footer>
     </div>
   )
 }

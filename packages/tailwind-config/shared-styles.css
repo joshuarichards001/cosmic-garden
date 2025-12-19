@@ -5,4 +5,19 @@
   --color-purple-1000: #a853ba;
   --color-red-1000: #e92a67;
   --animate-spin-slow: spin 20s linear infinite;
+
+  /* iA Writer theme colors */
+  --color-writer-bg-light: #ffffff;
+  --color-writer-bg-dark: #1a1a1a;
+  --color-writer-text-light: #424242;
+  --color-writer-text-dark: #cccccc;
+  --color-writer-cursor: #007AFF;
+  --color-writer-border-light: #e5e7eb;
+  --color-writer-border-dark: #1f2937;
+  --color-writer-button-bg-light: #f3f4f6;
+  --color-writer-button-bg-light-hover: #e5e7eb;
+  --color-writer-button-bg-dark: #1f2937;
+  --color-writer-button-bg-dark-hover: #374151;
+  --color-writer-button-text-light: #374151;
+  --color-writer-button-text-dark: #d1d5db;
 }
