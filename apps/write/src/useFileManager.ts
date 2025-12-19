@@ -46,6 +46,13 @@ export function useFileManager(
         }
     }, [editorRef])
 
+    const clear = useCallback(() => {
+        if (!editorRef.current) return
+        editorRef.current.innerHTML = ''
+        localStorage.setItem(STORAGE_KEY, '')
+        editorRef.current.focus()
+    }, [editorRef])
+
     useEffect(() => {
         if (editorRef.current) {
             editorRef.current.innerHTML = localStorage.getItem(STORAGE_KEY) || ''
@@ -71,5 +78,6 @@ export function useFileManager(
         importFile,
         handleFileChange,
         handleInput,
+        clear,
     }
 }

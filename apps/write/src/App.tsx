@@ -7,7 +7,7 @@ function App() {
   const editorRef = useRef<HTMLDivElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
   const { centerCursor } = useCursorCentering(editorRef, containerRef)
-  const { fileInputRef, save, importFile, handleFileChange, handleInput } = useFileManager(editorRef, centerCursor)
+  const { fileInputRef, save, importFile, handleFileChange, handleInput, clear } = useFileManager(editorRef, centerCursor)
 
   return (
     <div className="h-full bg-writer-bg-light dark:bg-writer-bg-dark text-writer-text-light dark:text-writer-text-dark flex flex-col font-mono">
@@ -17,7 +17,7 @@ function App() {
           ref={editorRef}
           contentEditable
           onInput={handleInput}
-          className="w-full max-w-[650px] outline-none text-base leading-[1.8] px-8 caret-writer-cursor"
+          className="w-full max-w-[1200px] outline-none text-lg leading-[1.8] px-40 py-[50vh] self-start caret-writer-cursor"
           style={{
             minHeight: '1.5em',
           }}
@@ -29,6 +29,9 @@ function App() {
         </button>
         <button onClick={save} className="bg-writer-button-bg-light hover:bg-writer-button-bg-light-hover dark:bg-writer-button-bg-dark dark:hover:bg-writer-button-bg-dark-hover text-writer-button-text-light dark:text-writer-button-text-dark px-4 py-2 rounded text-sm">
           Save
+        </button>
+        <button onClick={clear} className="bg-writer-button-bg-light hover:bg-writer-button-bg-light-hover dark:bg-writer-button-bg-dark dark:hover:bg-writer-button-bg-dark-hover text-writer-button-text-light dark:text-writer-button-text-dark px-4 py-2 rounded text-sm">
+          Clear
         </button>
       </footer>
     </div>
