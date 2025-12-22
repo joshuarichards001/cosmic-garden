@@ -41,7 +41,15 @@ function App() {
         'text-writer-text-light dark:text-writer-text-dark'
       )}
     >
-      <div className="flex-1 flex flex-col justify-end overflow-hidden">
+      <div
+        className="flex-1 flex flex-col justify-end overflow-hidden"
+        style={{
+          maskImage:
+            'linear-gradient(to bottom, transparent 0%, transparent 20%, rgba(0,0,0,0.1) 30%, rgba(0,0,0,0.4) 40%, rgba(0,0,0,0.7) 45%, black 50%, black 100%)',
+          WebkitMaskImage:
+            'linear-gradient(to bottom, transparent 0%, transparent 20%, rgba(0,0,0,0.1) 30%, rgba(0,0,0,0.4) 40%, rgba(0,0,0,0.7) 45%, black 50%, black 100%)',
+        }}
+      >
         <div
           ref={editorRef}
           contentEditable
@@ -54,8 +62,8 @@ function App() {
           }}
           data-placeholder="Type out your thoughts here..."
           className={clsx(
-            'w-full max-w-[1000px] outline-none',
-            'text-lg leading-[1.8] px-20 pb-[50vh]',
+            'w-full max-w-[800px] outline-none',
+            'text-lg leading-[1.8] px-8 pb-[40vh] mx-auto',
             'caret-writer-cursor',
             'empty:before:content-[attr(data-placeholder)]',
             'empty:before:text-writer-text-light/40 dark:empty:before:text-writer-text-dark/40'
