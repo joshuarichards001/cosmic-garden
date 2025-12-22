@@ -1,6 +1,13 @@
 @import "@repo/tailwind-config";
 @source "../node_modules/@repo/ui/src";
 
+@font-face {
+  font-family: 'Redacted Script';
+  src: url('/redacted-script-regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
 html,
 body,
 #root {

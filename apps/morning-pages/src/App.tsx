@@ -3,27 +3,29 @@ import '@repo/ui/styles.css'
 import clsx from 'clsx'
 import { useEffect, useRef, useState } from 'react'
 import { useFileManager } from './useFileManager'
-import { usePrivateMode } from './usePrivateMode'
 
 function App() {
   const editorRef = useRef<HTMLDivElement>(null)
   const [wordCount, setWordCount] = useState(0)
   const [footerVisible, setFooterVisible] = useState(true)
+  const [privateMode, setPrivateMode] = useState(false)
+  const lastTabRef = useRef(0)
   const { save, clear } = useFileManager(editorRef)
-  const {
-    privateMode,
-    toggle: togglePrivateMode,
-    handleDoubleTap,
-    handleInput: handlePrivateInput,
-    getRealText,
-  } = usePrivateMode(editorRef)
 
   useEffect(() => {
     editorRef.current?.focus()
   }, [])
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (handleDoubleTap(e)) return
+    if (e.key === 'Tab') {
+      e.preventDefault()
+      const now = Date.now()
+      if (now - lastTabRef.current < 300) {
+        setPrivateMode((prev) => !prev)
+      }
+      lastTabRef.current = now
+      return
+    }
 
     const blockedKeys = [
       'ArrowUp',
@@ -65,10 +67,14 @@ function App() {
           contentEditable
           onKeyDown={handleKeyDown}
           onInput={() => {
-            handlePrivateInput()
-            const words = getRealText().trim().split(/\s+/).filter(Boolean)
+            const text = editorRef.current?.innerText || ''
+            const words = text.trim().split(/\s+/).filter(Boolean)
             setWordCount(words.length)
             setFooterVisible(false)
+          }}
+          style={{
+            fontFamily: privateMode ? "'Redacted Script', monospace" : 'inherit',
+            transition: 'font-family 0.2s ease',
           }}
           data-placeholder="Type out your thoughts here..."
           className={clsx(
@@ -91,8 +97,8 @@ function App() {
         <div className="flex gap-2">
           <Button onClick={save} title="Ctrl/Cmd + s">Save</Button>
           <Button onClick={clear}>Clear</Button>
-          <Button onClick={togglePrivateMode} title="Tab Tab">
-            {privateMode ? 'Public' : 'Private'}
+          <Button onClick={() => setPrivateMode((prev) => !prev)} title="Tab Tab">
+            {privateMode ? 'Show' : 'Hide'}
           </Button>
         </div>
         <span className="text-sm self-center text-writer-text-light/60 dark:text-writer-text-dark/60">
