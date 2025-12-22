@@ -2,10 +2,12 @@ import clsx from "clsx";
 import { type ButtonHTMLAttributes, type ReactNode } from "react";
 
 export function Button({
+    title,
     children,
     className,
     ...props
 }: {
+    title?: string;
     children: ReactNode;
     className?: string;
 } & ButtonHTMLAttributes<HTMLButtonElement>) {
@@ -19,6 +21,7 @@ export function Button({
                 "dark:hover:bg-writer-button-bg-dark-hover",
                 className
             )}
+            title={title}
             {...props}
         >
             {children}

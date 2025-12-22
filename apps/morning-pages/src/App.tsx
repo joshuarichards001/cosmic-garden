@@ -89,9 +89,9 @@ function App() {
         )}
       >
         <div className="flex gap-2">
-          <Button onClick={save}>Save</Button>
+          <Button onClick={save} title="Ctrl/Cmd + s">Save</Button>
           <Button onClick={clear}>Clear</Button>
-          <Button onClick={togglePrivateMode}>
+          <Button onClick={togglePrivateMode} title="Tab Tab">
             {privateMode ? 'Public' : 'Private'}
           </Button>
         </div>
