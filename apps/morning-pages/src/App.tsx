@@ -3,18 +3,28 @@ import '@repo/ui/styles.css'
 import clsx from 'clsx'
 import { useEffect, useRef, useState } from 'react'
 import { useFileManager } from './useFileManager'
+import { usePrivateMode } from './usePrivateMode'
 
 function App() {
   const editorRef = useRef<HTMLDivElement>(null)
   const [wordCount, setWordCount] = useState(0)
   const [footerVisible, setFooterVisible] = useState(true)
   const { save, clear } = useFileManager(editorRef)
+  const {
+    privateMode,
+    toggle: togglePrivateMode,
+    handleDoubleTap,
+    handleInput: handlePrivateInput,
+    getRealText,
+  } = usePrivateMode(editorRef)
 
   useEffect(() => {
     editorRef.current?.focus()
   }, [])
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (handleDoubleTap(e)) return
+
     const blockedKeys = [
       'ArrowUp',
       'ArrowDown',
@@ -55,15 +65,15 @@ function App() {
           contentEditable
           onKeyDown={handleKeyDown}
           onInput={() => {
-            const text = editorRef.current?.textContent || ''
-            const words = text.trim().split(/\s+/).filter(Boolean)
+            handlePrivateInput()
+            const words = getRealText().trim().split(/\s+/).filter(Boolean)
             setWordCount(words.length)
             setFooterVisible(false)
           }}
           data-placeholder="Type out your thoughts here..."
           className={clsx(
             'w-full max-w-[800px] outline-none',
-            'text-lg leading-[1.8] px-8 pb-[40vh] mx-auto',
+            'text-lg leading-[1.8] px-8 pb-[45vh] mx-auto',
             'caret-writer-cursor',
             'empty:before:content-[attr(data-placeholder)]',
             'empty:before:text-writer-text-light/40 dark:empty:before:text-writer-text-dark/40'
@@ -81,6 +91,9 @@ function App() {
         <div className="flex gap-2">
           <Button onClick={save}>Save</Button>
           <Button onClick={clear}>Clear</Button>
+          <Button onClick={togglePrivateMode}>
+            {privateMode ? 'Public' : 'Private'}
+          </Button>
         </div>
         <span className="text-sm self-center text-writer-text-light/60 dark:text-writer-text-dark/60">
           {wordCount} words
