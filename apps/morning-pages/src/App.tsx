@@ -75,7 +75,7 @@ function App() {
           style={{
             fontFamily: privateMode ? "'Flow Circular', monospace" : 'inherit',
             fontSize: privateMode ? '1.4em' : undefined,
-            letterSpacing: privateMode ? '0.02em' : undefined,
+            letterSpacing: privateMode ? '0em' : undefined,
             lineHeight: privateMode ? '1.45' : undefined,
             transition: 'font-family 0.2s ease',
           }}
