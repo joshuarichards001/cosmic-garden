@@ -1,63 +1,61 @@
-import { useCallback, useEffect } from 'react'
-
-const STORAGE_KEY = 'write-content'
+import { useCallback, useEffect, useRef } from 'react'
 
 export function useFileManager(
     editorRef: React.RefObject<HTMLDivElement | null>,
-    containerRef: React.RefObject<HTMLDivElement | null>,
 ) {
+    const hasUnsavedChanges = useRef(false)
+
     const save = useCallback(() => {
-        if (!editorRef.current) return
+        if (!editorRef.current || editorRef.current.innerText.trim() === '') return
         const blob = new Blob([editorRef.current.innerText], { type: 'text/plain' })
         const a = document.createElement('a')
         a.href = URL.createObjectURL(blob)
         a.download = `${new Date().toISOString().split('T')[0]}.md`
         a.click()
         URL.revokeObjectURL(a.href)
-    }, [editorRef])
-
-    const handleInput = useCallback(() => {
-        if (editorRef.current) {
-            localStorage.setItem(STORAGE_KEY, editorRef.current.innerHTML)
-        }
+        hasUnsavedChanges.current = false
     }, [editorRef])
 
     const clear = useCallback(() => {
         if (!editorRef.current) return
         editorRef.current.innerHTML = ''
-        localStorage.setItem(STORAGE_KEY, '')
         editorRef.current.focus()
+        hasUnsavedChanges.current = false
     }, [editorRef])
 
     useEffect(() => {
-        if (editorRef.current) {
-            editorRef.current.innerHTML = localStorage.getItem(STORAGE_KEY) || ''
-            // Move cursor to end and scroll to bottom on initial load
-            const range = document.createRange()
-            const sel = window.getSelection()
-            range.selectNodeContents(editorRef.current)
-            range.collapse(false)
-            sel?.removeAllRanges()
-            sel?.addRange(range)
-            if (containerRef.current) {
-                containerRef.current.scrollTop = containerRef.current.scrollHeight
-            }
-        }
         const handleKeyDown = (e: KeyboardEvent) => {
-            if (e.ctrlKey || e.metaKey) {
-                if (e.key === 's') {
-                    e.preventDefault()
-                    save()
-                }
+            if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+                e.preventDefault()
+                save()
             }
         }
         window.addEventListener('keydown', handleKeyDown)
         return () => window.removeEventListener('keydown', handleKeyDown)
-    }, [save, editorRef, containerRef])
+    }, [save])
 
-    return {
-        save,
-        handleInput,
-        clear,
-    }
+    useEffect(() => {
+        const handleInput = () => {
+            if (editorRef.current && editorRef.current.innerText.trim() !== '') {
+                hasUnsavedChanges.current = true
+            } else {
+                hasUnsavedChanges.current = false
+            }
+        }
+        const editor = editorRef.current
+        editor?.addEventListener('input', handleInput)
+        return () => editor?.removeEventListener('input', handleInput)
+    }, [editorRef])
+
+    useEffect(() => {
+        const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+            if (hasUnsavedChanges.current) {
+                e.preventDefault()
+            }
+        }
+        window.addEventListener('beforeunload', handleBeforeUnload)
+        return () => window.removeEventListener('beforeunload', handleBeforeUnload)
+    }, [])
+
+    return { save, clear }
 }

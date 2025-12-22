@@ -1,13 +1,17 @@
 import '@repo/ui/styles.css'
-import { useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import { useCursorCentering } from './useCursorCentering'
 import { useFileManager } from './useFileManager'
 
 function App() {
   const editorRef = useRef<HTMLDivElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
-  const { save, handleInput, clear } = useFileManager(editorRef, containerRef)
+  const { save, clear } = useFileManager(editorRef)
   useCursorCentering(editorRef, containerRef)
+
+  useEffect(() => {
+    editorRef.current?.focus()
+  }, [])
 
   return (
     <div className="h-full bg-writer-bg-light dark:bg-writer-bg-dark text-writer-text-light dark:text-writer-text-dark flex flex-col font-mono">
@@ -15,8 +19,8 @@ function App() {
         <div
           ref={editorRef}
           contentEditable
-          onInput={handleInput}
-          className="w-full max-w-[1000px] outline-none text-lg leading-[1.8] px-20 py-[50vh] self-start caret-writer-cursor"
+          data-placeholder="Type out your thoughts here..."
+          className="w-full max-w-[1000px] outline-none text-lg leading-[1.8] px-20 py-[50vh] self-start caret-writer-cursor empty:before:content-[attr(data-placeholder)] empty:before:text-writer-text-light/40 dark:empty:before:text-writer-text-dark/40"
           style={{
             minHeight: '1.5em',
           }}
