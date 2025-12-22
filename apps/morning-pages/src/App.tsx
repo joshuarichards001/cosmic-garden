@@ -73,10 +73,10 @@ function App() {
             setFooterVisible(false)
           }}
           style={{
-            fontFamily: privateMode ? "'Redacted Script', monospace" : 'inherit',
-            fontSize: privateMode ? '1.3em' : undefined,
-            letterSpacing: privateMode ? '0.05em' : undefined,
-            lineHeight: privateMode ? '1.6' : undefined,
+            fontFamily: privateMode ? "'Flow Circular', monospace" : 'inherit',
+            fontSize: privateMode ? '1.4em' : undefined,
+            letterSpacing: privateMode ? '0.02em' : undefined,
+            lineHeight: privateMode ? '1.45' : undefined,
             transition: 'font-family 0.2s ease',
           }}
           data-placeholder="Type out your thoughts here..."
