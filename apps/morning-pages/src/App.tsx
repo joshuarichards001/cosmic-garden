@@ -85,7 +85,8 @@ function App() {
             'text-lg leading-[1.8] px-8 pb-[45vh] mx-auto',
             'caret-writer-cursor',
             'empty:before:content-[attr(data-placeholder)]',
-            'empty:before:text-writer-text-light/40 dark:empty:before:text-writer-text-dark/40'
+            'empty:before:text-writer-text-light/40 dark:empty:before:text-writer-text-dark/40',
+            'whitespace-pre-wrap break-words'
           )}
         />
       </div>
