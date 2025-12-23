@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "pnpm --filter=@repo/ui build && pnpm run build:self",
+    "build:self": "tsc -b && vite build",
     "lint": "eslint src --max-warnings 0",
     "check-types": "tsc -b",
     "preview": "vite preview"
