@@ -1,0 +1,75 @@
+---
+import { getCollection, render } from "astro:content";
+import Layout from "../../components/Layout.astro";
+
+export async function getStaticPaths() {
+  const posts = await getCollection("blog");
+
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+---
+
+<Layout title={post.data.title} description={post.data.description}>
+  <h1 class="text-4xl font-semibold">{post.data.title}</h1>
+  <p class="mt-4 text-lg text-zinc-400">
+    {new Date(post.data.date).toDateString().slice(4)}
+  </p>
+  <article id="md">
+    <Content />
+  </article>
+
+  <section class="mt-16 pt-8 border-t border-zinc-700">
+    <h2 class="text-2xl font-semibold mb-6">Comments</h2>
+    <div
+      id="cusdis_thread"
+      data-host="https://cusdis.com"
+      data-app-id="7bbb764d-940d-48c0-b4d6-e5a8f3765230"
+      data-page-id={post.id}
+      data-page-url={Astro.url.href}
+      data-page-title={post.data.title}
+      data-theme="dark"
+    >
+    </div>
+  </section>
+  <script async defer src="https://cusdis.com/js/cusdis.es.js"></script>
+</Layout>
+
+<style lang="postcss">
+  @reference "@repo/tailwind-config";
+
+  :global(#md h2) {
+    @apply mt-12 text-3xl font-semibold;
+  }
+  :global(#md h3) {
+    @apply mt-8 text-2xl font-medium;
+  }
+  :global(#md ol) {
+    @apply mt-4 list-decimal list-inside;
+  }
+  :global(#md ul) {
+    @apply mt-4 list-disc list-inside;
+  }
+  :global(#md a) {
+    @apply text-blue-400 underline hover:text-zinc-100;
+  }
+  :global(#md > p) {
+    @apply mt-4;
+  }
+  :global(#md .astro-code) {
+    @apply bg-zinc-800 mt-4 overflow-scroll rounded-lg px-4 py-3 leading-tight;
+    scrollbar-width: none;
+  }
+  :global(#md .astro-code span) {
+    @apply text-sm text-zinc-300;
+  }
+
+  :global(#cusdis_thread iframe) {
+    min-height: 300px;
+  }
+</style>

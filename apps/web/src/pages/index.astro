@@ -1,32 +1,38 @@
 ---
-import { Card } from '@repo/ui/card';
-import { TurborepoLogo } from '@repo/ui/turborepo-logo';
-import '@repo/ui/styles.css';
-import '../styles/global.css';
+import { getCollection } from "astro:content";
+import Layout from "../components/Layout.astro";
+
+const posts = await getCollection("blog");
+const sortedPosts = posts.sort(
+  (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime(),
+);
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Cosmic Garden - Web</title>
-	</head>
-	<body class="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white flex flex-col items-center justify-center p-8">
-		<div class="text-center mb-8">
-			<TurborepoLogo client:load />
-			<h1 class="text-4xl font-bold mt-4">Cosmic Garden Web</h1>
-			<p class="text-gray-400 mt-2">Built with Astro + Turborepo</p>
-		</div>
-		
-		<div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl">
-			<Card title="Documentation" href="https://turbo.build/repo/docs" client:load>
-				Find in-depth information about Turborepo features and API.
-			</Card>
-			<Card title="Learn" href="https://turbo.build/repo/docs/getting-started" client:load>
-				Learn more about Turborepo in an interactive course.
-			</Card>
-		</div>
-	</body>
-</html>
+<Layout title="Home">
+  <h1 class="text-4xl font-semibold">Welcome to Cosmic Garden</h1>
+  <p class="mt-4 text-lg text-zinc-400">A creative space for ideas to bloom.</p>
+
+  <section class="mt-12">
+    <h2 class="text-2xl font-semibold">Recent Posts</h2>
+    <ul class="mt-6 space-y-4">
+      {
+        sortedPosts.map((post) => (
+          <li>
+            <a
+              href={`/blog/${post.id}`}
+              class="block p-4 rounded-lg bg-zinc-800 hover:bg-zinc-700 transition-colors"
+            >
+              <h3 class="text-xl font-medium text-purple-400">
+                {post.data.title}
+              </h3>
+              <p class="mt-1 text-zinc-400">{post.data.description}</p>
+              <time class="mt-2 block text-sm text-zinc-500">
+                {new Date(post.data.date).toDateString().slice(4)}
+              </time>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+</Layout>
