@@ -44,7 +44,8 @@ export default function Galaxy() {
       const parent = canvas.parentElement;
       if (parent) {
         width = parent.clientWidth;
-        height = Math.min(parent.clientWidth * 0.8, 600); // Keep aspect ratio reasonable
+        const isMobile = width < 640;
+        height = isMobile ? width : Math.min(width * 0.7, 550);
         canvas.width = width;
         canvas.height = height;
         centerX = width / 2;
@@ -56,7 +57,7 @@ export default function Galaxy() {
     // Initialize particles
     const initParticles = () => {
       particles = [];
-      const maxRadius = Math.min(width, height) / 2 - 50;
+      const maxRadius = Math.min(width, height) / 2 - 20;
 
       for (let i = 0; i < particleCount; i++) {
         // Logarithmic spiral distribution
@@ -182,11 +183,8 @@ export default function Galaxy() {
   }, []);
 
   return (
-    <div className="w-full flex justify-center items-center py-10">
-      <canvas
-        ref={canvasRef}
-        className="cursor-crosshair rounded-full"
-      />
+    <div className="w-full flex justify-center items-center py-6 sm:py-10 px-4 sm:px-0">
+      <canvas ref={canvasRef} className="cursor-crosshair" />
     </div>
   );
 }
