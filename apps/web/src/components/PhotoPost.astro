@@ -1,6 +1,7 @@
 ---
 import type { CollectionEntry } from "astro:content";
 import { render } from "astro:content";
+import Lightbox from "./Lightbox.astro";
 
 interface Props {
   post: CollectionEntry<"posts">;
@@ -23,16 +24,18 @@ const media = post.data.media || [];
   >
     {
       media.map((item) => (
-        <img
-          src={item.src}
-          alt={item.alt || ""}
-          loading="lazy"
-          class={
-            media.length > 1
-              ? "aspect-square object-cover rounded-lg shadow-lg"
-              : "w-full rounded-lg shadow-lg"
-          }
-        />
+        <Lightbox src={item.src} alt={item.alt || ""} type="image">
+          <img
+            src={item.src}
+            alt={item.alt || ""}
+            loading="lazy"
+            class={
+              media.length > 1
+                ? "aspect-square object-cover rounded-lg shadow-lg"
+                : "w-full rounded-lg shadow-lg"
+            }
+          />
+        </Lightbox>
       ))
     }
   </div>

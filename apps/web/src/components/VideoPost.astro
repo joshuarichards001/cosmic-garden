@@ -1,6 +1,7 @@
 ---
 import type { CollectionEntry } from "astro:content";
 import { render } from "astro:content";
+import Lightbox from "./Lightbox.astro";
 
 interface Props {
   post: CollectionEntry<"posts">;
@@ -15,10 +16,27 @@ const media = post.data.media || [];
   {
     media.map((item) => (
       <div class="video-container mb-4">
-        <video controls preload="metadata" class="w-full rounded-lg">
-          <source src={item.src} />
-          Your browser does not support the video element.
-        </video>
+        <Lightbox src={item.src} type="video">
+          <video
+            preload="metadata"
+            class="w-full rounded-lg pointer-events-none"
+          >
+            <source src={item.src} />
+            Your browser does not support the video element.
+          </video>
+          <div class="play-overlay">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="64"
+              height="64"
+              viewBox="0 0 24 24"
+              fill="white"
+              class="drop-shadow-lg"
+            >
+              <polygon points="5 3 19 12 5 21 5 3" />
+            </svg>
+          </div>
+        </Lightbox>
       </div>
     ))
   }
@@ -32,10 +50,16 @@ const media = post.data.media || [];
     @reference "@repo/tailwind-config";
 
     .video-container {
-        @apply aspect-video;
+        @apply aspect-video relative;
     }
     video {
         @apply h-full w-full object-cover;
+    }
+    .play-overlay {
+        @apply absolute inset-0 flex items-center justify-center bg-black/20 transition-opacity;
+    }
+    .video-container:hover .play-overlay {
+        @apply bg-black/30;
     }
     .caption :global(p) {
         @apply mt-2 first:mt-0;

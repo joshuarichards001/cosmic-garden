@@ -1,0 +1,83 @@
+---
+interface Props {
+  src: string;
+  alt?: string;
+  type: "image" | "video";
+}
+
+const { src, alt, type } = Astro.props;
+const dialogId = `lightbox-${Math.random().toString(36).slice(2, 9)}`;
+---
+
+<div class="cursor-pointer" data-dialog-id={dialogId}>
+  <slot />
+</div>
+
+<dialog
+  id={dialogId}
+  class="fixed inset-0 m-auto max-w-[90vw] max-h-[90vh] bg-transparent border-0 p-0 backdrop:bg-black/90 backdrop:backdrop-blur-sm"
+>
+  <button
+    type="button"
+    data-close
+    class="fixed top-4 right-4 text-white/80 hover:text-white cursor-pointer bg-black/50 hover:bg-black/70 border-0 p-2 rounded-full z-50 transition-colors"
+    aria-label="Close"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="32"
+      height="32"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    >
+      <line x1="18" y1="6" x2="6" y2="18"></line>
+      <line x1="6" y1="6" x2="18" y2="18"></line>
+    </svg>
+  </button>
+  <div>
+    {
+      type === "image" ? (
+        <img
+          src={src}
+          alt={alt || ""}
+          class="max-w-full max-h-[90vh] object-contain rounded-lg"
+        />
+      ) : (
+        <video src={src} controls class="max-w-full max-h-[90vh] rounded-lg" />
+      )
+    }
+  </div>
+</dialog>
+
+<script define:vars={{ dialogId }}>
+  const trigger = document.querySelector(`[data-dialog-id="${dialogId}"]`);
+  const dialog = document.getElementById(dialogId);
+
+  if (trigger && dialog) {
+    trigger.addEventListener("click", () => {
+      dialog.showModal();
+      const video = dialog.querySelector("video");
+      if (video) video.play();
+    });
+
+    dialog.querySelector("[data-close]")?.addEventListener("click", () => {
+      dialog.close();
+    });
+
+    dialog.addEventListener("click", (e) => {
+      if (e.target === dialog) dialog.close();
+    });
+
+    dialog.addEventListener("close", () => {
+      const video = dialog.querySelector("video");
+      if (video) {
+        video.pause();
+        video.currentTime = 0;
+      }
+    });
+  }
+</script>
