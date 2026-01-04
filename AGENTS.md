@@ -49,13 +49,21 @@ Run all commands from the repository root:
 
 - Uses Astro 5 with `@astrojs/react` integration
 - Type checking via `astro check`
-- Pages in `src/pages/`
+- Deployed to Cloudflare Workers
+- Media files stored on Cloudflare R2
+- **Content**: Personal feed with posts collection (`src/content/posts/`)
+  - Post types: `note`, `photo`, `audio`, `video`
+  - Schema: `type`, `date`, `title?`, `location?`, `media[]?`, `tags[]?`
+- **Components**: `src/components/` — `Post.astro` (wrapper), `NotePost.astro`, `PhotoPost.astro`, `AudioPost.astro`, `VideoPost.astro`
+- **Pages**: `/posts/` (feed index), `/posts/[slug]/` (individual post)
+- **RSS**: `/posts.xml`
 
 ### `apps/write` (Vite + React)
 
 - Uses `rolldown-vite` (Rolldown-powered Vite) for bundling
 - React 19
 - Standard Vite project structure
+- Deployed to Vercel
 
 ## Package Guidelines
 
