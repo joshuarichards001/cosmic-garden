@@ -32,11 +32,6 @@ export default function Galaxy() {
 
     // Interaction state
     const mouse = { x: -1000, y: -1000 };
-    let cachedRect: DOMRect | null = null;
-
-    const updateRect = () => {
-      cachedRect = canvas.getBoundingClientRect();
-    };
 
     // Configuration
     const particleCount = 3000;
@@ -148,30 +143,11 @@ export default function Galaxy() {
 
     // Event Listeners
     const handleMouseMove = (e: MouseEvent) => {
-      if (!cachedRect) return;
-      mouse.x = e.clientX - cachedRect.left;
-      mouse.y = e.clientY - cachedRect.top;
+      const rect = canvas.getBoundingClientRect();
+      mouse.x = e.clientX - rect.left;
+      mouse.y = e.clientY - rect.top;
     };
 
-    const handleTouchStart = (e: TouchEvent) => {
-      e.preventDefault();
-      if (!cachedRect) return;
-      const touch = e.touches[0];
-      if (touch) {
-        mouse.x = touch.clientX - cachedRect.left;
-        mouse.y = touch.clientY - cachedRect.top;
-      }
-    };
-
-    const handleTouchMove = (e: TouchEvent) => {
-      e.preventDefault();
-      if (!cachedRect) return;
-      const touch = e.touches[0];
-      if (touch) {
-        mouse.x = touch.clientX - cachedRect.left;
-        mouse.y = touch.clientY - cachedRect.top;
-      }
-    };
 
     const handleMouseLeave = () => {
       mouse.x = -1000;
@@ -179,24 +155,17 @@ export default function Galaxy() {
     };
 
     window.addEventListener('resize', resize);
-    window.addEventListener('scroll', updateRect, { passive: true });
     canvas.addEventListener('mousemove', handleMouseMove);
-    canvas.addEventListener('touchstart', handleTouchStart, { passive: false });
-    canvas.addEventListener('touchmove', handleTouchMove, { passive: false });
     canvas.addEventListener('mouseleave', handleMouseLeave);
     canvas.addEventListener('touchend', handleMouseLeave);
 
     // Init
     resize();
-    updateRect();
     animate();
 
     return () => {
       window.removeEventListener('resize', resize);
-      window.removeEventListener('scroll', updateRect);
       canvas.removeEventListener('mousemove', handleMouseMove);
-      canvas.removeEventListener('touchstart', handleTouchStart);
-      canvas.removeEventListener('touchmove', handleTouchMove);
       canvas.removeEventListener('mouseleave', handleMouseLeave);
       canvas.removeEventListener('touchend', handleMouseLeave);
       cancelAnimationFrame(animationFrameId);
