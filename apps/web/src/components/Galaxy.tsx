@@ -32,6 +32,24 @@ export default function Galaxy() {
 
     // Interaction state
     const mouse = { x: -1000, y: -1000 };
+    let cachedRect: DOMRect | null = null;
+    let isScrolling = false;
+    let scrollTimeout: ReturnType<typeof setTimeout> | null = null;
+
+    const updateRect = () => {
+      cachedRect = canvas.getBoundingClientRect();
+    };
+
+    const handleScroll = () => {
+      isScrolling = true;
+      mouse.x = -1000;
+      mouse.y = -1000;
+      updateRect();
+      if (scrollTimeout) clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(() => {
+        isScrolling = false;
+      }, 150);
+    };
 
     // Configuration
     const particleCount = 3000;
@@ -147,9 +165,9 @@ export default function Galaxy() {
 
     // Event Listeners
     const handleMouseMove = (e: MouseEvent) => {
-      const rect = canvas.getBoundingClientRect();
-      mouse.x = e.clientX - rect.left;
-      mouse.y = e.clientY - rect.top;
+      if (!cachedRect) return;
+      mouse.x = e.clientX - cachedRect.left;
+      mouse.y = e.clientY - cachedRect.top;
     };
 
 
@@ -159,16 +177,20 @@ export default function Galaxy() {
     };
 
     window.addEventListener('resize', resize);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     canvas.addEventListener('mousemove', handleMouseMove);
     canvas.addEventListener('mouseleave', handleMouseLeave);
     canvas.addEventListener('touchend', handleMouseLeave);
 
     // Init
     resize();
+    updateRect();
     animate();
 
     return () => {
       window.removeEventListener('resize', resize);
+      window.removeEventListener('scroll', handleScroll);
+      if (scrollTimeout) clearTimeout(scrollTimeout);
       canvas.removeEventListener('mousemove', handleMouseMove);
       canvas.removeEventListener('mouseleave', handleMouseLeave);
       canvas.removeEventListener('touchend', handleMouseLeave);
