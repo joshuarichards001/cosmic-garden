@@ -87,7 +87,7 @@ export default function Galaxy() {
 
     const animate = () => {
       ctx.clearRect(0, 0, width, height);
-      globalRotation += rotationSpeed;
+      globalRotation -= rotationSpeed;
 
       for (const p of particles) {
         const currentAngle = p.angle + globalRotation;
