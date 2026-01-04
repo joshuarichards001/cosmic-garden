@@ -1,0 +1,88 @@
+---
+import type { CollectionEntry } from "astro:content";
+import AudioPost from "./AudioPost.astro";
+import NotePost from "./NotePost.astro";
+import PhotoPost from "./PhotoPost.astro";
+import VideoPost from "./VideoPost.astro";
+
+interface Props {
+  post: CollectionEntry<"posts">;
+}
+
+const { post } = Astro.props;
+
+const components = {
+  note: NotePost,
+  photo: PhotoPost,
+  audio: AudioPost,
+  video: VideoPost,
+};
+
+const Component = components[post.data.type];
+---
+
+<article class="post p-6 rounded-xl bg-zinc-800/50 border border-zinc-700/50">
+  <header class="mb-4 flex items-center justify-between text-sm text-zinc-500">
+    <a
+      href={`/posts/${post.id}/`}
+      class="hover:text-zinc-300 transition-colors"
+    >
+      <time datetime={post.data.date.toISOString()}>
+        {
+          post.data.date.toLocaleDateString("en-GB", {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+          })
+        }
+      </time>
+    </a>
+    <button
+      type="button"
+      class="hover:text-zinc-300 transition-colors cursor-pointer"
+      data-copy-url={`/posts/${post.id}/`}
+    >
+      copy link
+    </button>
+  </header>
+  <Component post={post} />
+  {
+    post.data.tags && post.data.tags.length > 0 && (
+      <div class="mt-4 flex gap-2 flex-wrap">
+        {post.data.tags.map((tag) => (
+          <span class="text-xs text-zinc-500 bg-zinc-900 px-2 py-1 rounded">
+            #{tag}
+          </span>
+        ))}
+      </div>
+    )
+  }
+</article>
+
+<style lang="postcss">
+    @reference "@repo/tailwind-config";
+
+    .post {
+        @apply mt-6;
+    }
+</style>
+
+<script>
+  document
+    .querySelectorAll<HTMLButtonElement>("[data-copy-url]")
+    .forEach((button) => {
+      button.addEventListener("click", async () => {
+        const path = button.dataset.copyUrl;
+        if (!path) return;
+
+        const url = new URL(path, window.location.origin).href;
+        await navigator.clipboard.writeText(url);
+
+        const originalText = button.textContent;
+        button.textContent = "copied!";
+        setTimeout(() => {
+          button.textContent = originalText;
+        }, 2000);
+      });
+    });
+</script>

@@ -1,0 +1,46 @@
+---
+import { render } from "astro:content";
+import type { CollectionEntry } from "astro:content";
+
+interface Props {
+  post: CollectionEntry<"posts">;
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+---
+
+<div class="note-post">
+  {
+    post.data.title && (
+      <h2 class="text-2xl font-semibold mb-4">{post.data.title}</h2>
+    )
+  }
+  <div class="prose">
+    <Content />
+  </div>
+</div>
+
+<style lang="postcss">
+    @reference "@repo/tailwind-config";
+    
+    .prose :global(ol) {
+        @apply mt-4 list-decimal list-inside;
+    }
+    .prose :global(ul) {
+        @apply mt-4 list-disc list-inside;
+    }
+    .prose :global(a) {
+        @apply text-blue-400 underline hover:text-zinc-100;
+    }
+    .prose :global(p) {
+        @apply mt-4 first:mt-0;
+    }
+    .prose :global(.astro-code) {
+        @apply bg-zinc-800 mt-4 overflow-scroll rounded-lg px-4 py-3 leading-tight;
+        scrollbar-width: none;
+    }
+    .prose :global(.astro-code span) {
+        @apply text-sm text-zinc-300;
+    }
+</style>

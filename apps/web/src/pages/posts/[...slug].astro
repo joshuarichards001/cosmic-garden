@@ -1,0 +1,102 @@
+---
+import { getCollection } from "astro:content";
+import Layout from "../../components/Layout.astro";
+import AudioPost from "../../components/AudioPost.astro";
+import NotePost from "../../components/NotePost.astro";
+import PhotoPost from "../../components/PhotoPost.astro";
+import VideoPost from "../../components/VideoPost.astro";
+
+export async function getStaticPaths() {
+  const posts = await getCollection("posts");
+
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+
+const allPosts = (await getCollection("posts")).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
+);
+
+const currentIndex = allPosts.findIndex((p) => p.id === post.id);
+const prevPost =
+  currentIndex < allPosts.length - 1 ? allPosts[currentIndex + 1] : null;
+const nextPost = currentIndex > 0 ? allPosts[currentIndex - 1] : null;
+
+const components = {
+  note: NotePost,
+  photo: PhotoPost,
+  audio: AudioPost,
+  video: VideoPost,
+};
+const Component = components[post.data.type];
+
+const pageTitle = post.data.title || `${post.data.type} post`;
+---
+
+<Layout title={pageTitle}>
+  <article class="post-detail">
+    <Component post={post} />
+
+    <footer class="mt-6 text-sm text-zinc-500">
+      <time datetime={post.data.date.toISOString()}>
+        {
+          post.data.date.toLocaleDateString("en-GB", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          })
+        }
+      </time>
+      {post.data.location && <span class="ml-2">· {post.data.location}</span>}
+    </footer>
+
+    {
+      post.data.tags && post.data.tags.length > 0 && (
+        <div class="mt-4 flex gap-2 flex-wrap">
+          {post.data.tags.map((tag) => (
+            <span class="text-xs text-zinc-500 bg-zinc-800 px-2 py-1 rounded">
+              #{tag}
+            </span>
+          ))}
+        </div>
+      )
+    }
+  </article>
+
+  <nav class="mt-12 pt-8 border-t border-zinc-700 flex justify-between">
+    {
+      prevPost ? (
+        <a
+          href={`/posts/${prevPost.id}/`}
+          class="text-zinc-400 hover:text-zinc-100 transition-colors"
+        >
+          ← {prevPost.data.title || "Previous"}
+        </a>
+      ) : (
+        <span />
+      )
+    }
+    {
+      nextPost ? (
+        <a
+          href={`/posts/${nextPost.id}/`}
+          class="text-zinc-400 hover:text-zinc-100 transition-colors"
+        >
+          {nextPost.data.title || "Next"} →
+        </a>
+      ) : (
+        <span />
+      )
+    }
+  </nav>
+</Layout>
+
+<style>
+  :global(#cusdis_thread iframe) {
+    min-height: 300px;
+  }
+</style>

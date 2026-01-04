@@ -1,0 +1,43 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { render } from "astro:content";
+
+interface Props {
+  post: CollectionEntry<"posts">;
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const media = post.data.media || [];
+---
+
+<div class="video-post">
+  {
+    media.map((item) => (
+      <div class="video-container mb-4">
+        <video controls preload="metadata" class="w-full rounded-lg">
+          <source src={item.src} />
+          Your browser does not support the video element.
+        </video>
+      </div>
+    ))
+  }
+
+  <div class="caption text-zinc-300">
+    <Content />
+  </div>
+</div>
+
+<style lang="postcss">
+    @reference "@repo/tailwind-config";
+
+    .video-container {
+        @apply aspect-video;
+    }
+    video {
+        @apply h-full w-full object-cover;
+    }
+    .caption :global(p) {
+        @apply mt-2 first:mt-0;
+    }
+</style>

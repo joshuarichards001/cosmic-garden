@@ -1,0 +1,42 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { render } from "astro:content";
+
+interface Props {
+  post: CollectionEntry<"posts">;
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const media = post.data.media || [];
+---
+
+<div class="audio-post">
+  {
+    media.map((item) => (
+      <div class="audio-item mb-4">
+        {item.title && <p class="text-lg font-medium mb-2">{item.title}</p>}
+        <audio controls preload="metadata" class="w-full">
+          <source src={item.src} />
+          Your browser does not support the audio element.
+        </audio>
+      </div>
+    ))
+  }
+
+  <div class="description text-zinc-300">
+    <Content />
+  </div>
+</div>
+
+<style lang="postcss">
+    @reference "@repo/tailwind-config";
+
+    audio {
+        @apply rounded-lg h-10;
+        filter: invert(1);
+    }
+    .description :global(p) {
+        @apply mt-2 first:mt-0;
+    }
+</style>

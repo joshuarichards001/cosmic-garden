@@ -1,0 +1,63 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { render } from "astro:content";
+
+interface Props {
+  post: CollectionEntry<"posts">;
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const media = post.data.media || [];
+---
+
+<div class="photo-post">
+  {
+    post.data.location && (
+      <p class="text-sm text-zinc-400 mb-3">{post.data.location}</p>
+    )
+  }
+
+  <div
+    class={`media-grid ${media.length > 1 ? `grid-cols-${Math.min(media.length, 4)}` : ""}`}
+  >
+    {
+      media.map((item) => (
+        <img
+          src={item.src}
+          alt={item.alt || ""}
+          loading="lazy"
+          class={
+            media.length > 1
+              ? "aspect-square object-cover rounded-lg shadow-lg"
+              : "w-full rounded-lg shadow-lg"
+          }
+        />
+      ))
+    }
+  </div>
+
+  <div class="caption mt-4 text-zinc-300">
+    <Content />
+  </div>
+</div>
+
+<style lang="postcss">
+    @reference "@repo/tailwind-config";
+
+    .media-grid {
+        @apply grid gap-2;
+    }
+    .media-grid.grid-cols-2 {
+        @apply grid-cols-2;
+    }
+    .media-grid.grid-cols-3 {
+        @apply grid-cols-3;
+    }
+    .media-grid.grid-cols-4 {
+        @apply grid-cols-4;
+    }
+    .caption :global(p) {
+        @apply mt-2 first:mt-0;
+    }
+</style>
