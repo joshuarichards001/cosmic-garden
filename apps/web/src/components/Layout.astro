@@ -26,6 +26,25 @@ const { title, description = "A creative space for ideas to bloom" } =
     <meta property="og:locale" content="en" />
     <meta property="og:description" content={description} />
     <meta property="og:site_name" content="Cosmic Garden" />
+
+    <!-- Privacy-friendly analytics by Plausible -->
+    <script
+      is:inline
+      async
+      src="https://plausible.io/js/pa-D491yn-QajzNuH1nwbHu2.js"></script>
+    <script is:inline>
+      ((window.plausible =
+        window.plausible ||
+        function () {
+          (plausible.q = plausible.q || []).push(arguments);
+        }),
+        (plausible.init =
+          plausible.init ||
+          function (i) {
+            plausible.o = i || {};
+          }));
+      plausible.init();
+    </script>
   </head>
   <body class="mx-auto max-w-3xl px-4 text-zinc-100 bg-zinc-900">
     <Header />
