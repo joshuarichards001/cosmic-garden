@@ -1,19 +1,21 @@
 ---
-import Galaxy from "../components/Galaxy";
 import Layout from "../components/Layout.astro";
+import Galaxy from "../react/Galaxy";
 ---
 
 <Layout title="Home">
-  <h1 class="text-4xl font-semibold">Welcome to Cosmic Garden</h1>
-  <p class="mt-4 text-lg text-zinc-400">A creative space for ideas to bloom.</p>
+  <h1 class="text-4xl font-semibold mb-6">Welcome to Cosmic Garden</h1>
+  <p class="mt-4 text-lg text-zinc-400">A space for me to be creative.</p>
   <p class="mt-4 text-lg text-zinc-400">
-    Check out my quick <a
+    Check out my short <a
       class="text-purple-400 hover:text-purple-300 hover:underline transition-colors"
       href="/posts/">posts</a
     > or slightly longer <a
       class="text-purple-400 hover:text-purple-300 hover:underline transition-colors"
       href="https://blog.cosmic.garden">blogs</a
-    >.
+    > on bear blog.
   </p>
+  <p class="mt-4 text-lg text-zinc-400">Checkout <a class="text-purple-400 hover:text-purple-300 hover:underline transition-colors" href="/morning-pages/">projects</a> for creativity with code.</p>
+  <p class="mt-4 text-lg text-zinc-400">Or the <a class="text-purple-400 hover:text-purple-300 hover:underline transition-colors" href="/about/">about</a> for more info.</p>
   <Galaxy client:load />
 </Layout>
