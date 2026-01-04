@@ -48,11 +48,23 @@ function App() {
     <div
       onMouseMove={() => setFooterVisible(true)}
       className={clsx(
-        'h-full flex flex-col font-mono overflow-hidden',
+        'relative h-full flex flex-col font-mono overflow-hidden',
         'bg-writer-bg-light dark:bg-writer-bg-dark',
         'text-writer-text-light dark:text-writer-text-dark'
       )}
     >
+      <a
+        href="https://cosmic.garden"
+        className={clsx(
+          'absolute top-4 left-4 z-20 text-sm',
+          'text-writer-text-light/60 dark:text-writer-text-dark/60',
+          'hover:text-writer-text-light dark:hover:text-writer-text-dark',
+          'transition-opacity duration-300',
+          footerVisible ? 'opacity-100' : 'opacity-0'
+        )}
+      >
+        &larr; cosmic.garden
+      </a>
       <div
         className="flex-1 flex flex-col justify-end overflow-hidden"
         style={{
