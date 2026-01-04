@@ -12,5 +12,11 @@
   },
   "observability": {
     "enabled": true
-  }
+  },
+  "routes": [
+    {
+      "pattern": "cosmic.garden",
+      "custom_domain": true
+    }
+  ]
 }
