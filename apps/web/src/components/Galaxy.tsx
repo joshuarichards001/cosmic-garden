@@ -1,16 +1,10 @@
 import { useEffect, useRef } from 'react';
 
 interface Particle {
-  x: number;
-  y: number;
-  baseX: number;
-  baseY: number;
   size: number;
   color: string;
   angle: number;
   distance: number;
-  speed: number;
-  randomOffset: number;
 }
 
 export default function Galaxy() {
@@ -30,126 +24,83 @@ export default function Galaxy() {
     let centerX = 0;
     let centerY = 0;
 
-    // Interaction state
     const mouse = { x: -1000, y: -1000 };
     let cachedRect: DOMRect | null = null;
-    let isScrolling = false;
-    let scrollTimeout: ReturnType<typeof setTimeout> | null = null;
 
     const updateRect = () => {
       cachedRect = canvas.getBoundingClientRect();
     };
 
     const handleScroll = () => {
-      isScrolling = true;
       mouse.x = -1000;
       mouse.y = -1000;
       updateRect();
-      if (scrollTimeout) clearTimeout(scrollTimeout);
-      scrollTimeout = setTimeout(() => {
-        isScrolling = false;
-      }, 150);
     };
 
-    // Configuration
     const particleCount = 3000;
     const armCount = 4;
-    const armSpread = 1.0; // How spread out the arms are
-    const rotationSpeed = 0.0005; // Constant background rotation
+    const armSpread = 1.0;
+    const rotationSpeed = 0.0005;
 
-    // Resize handler
     const resize = () => {
       const parent = canvas.parentElement;
-      if (parent) {
-        const newWidth = parent.clientWidth;
-        // Ignore resize events if width hasn't changed (fixes iOS address bar scroll issue)
-        if (newWidth === width) return;
+      if (!parent) return;
 
-        width = newWidth;
-        const isMobile = width < 640;
-        height = isMobile ? width : Math.min(width * 0.7, 550);
-        canvas.width = width;
-        canvas.height = height;
-        centerX = width / 2;
-        centerY = height / 2;
-        initParticles();
-      }
+      const newWidth = parent.clientWidth;
+      if (newWidth === width) return;
+
+      width = newWidth;
+      height = width < 640 ? width : Math.min(width * 0.7, 550);
+      canvas.width = width;
+      canvas.height = height;
+      centerX = width / 2;
+      centerY = height / 2;
+      initParticles();
     };
 
-    // Initialize particles
     const initParticles = () => {
       particles = [];
       const maxRadius = Math.min(width, height) / 2 - 20;
 
       for (let i = 0; i < particleCount; i++) {
-        // Logarithmic spiral distribution
-        // distance from center (0 to 1)
         const t = Math.random();
-        // More particles in the center
         const distance = t * maxRadius;
-
-        // Angle based on arms + spiral factor + randomness
         const spiralAngle = t * 5;
         const armIndex = Math.floor(Math.random() * armCount);
         const armAngle = (armIndex * Math.PI * 2) / armCount;
-        const randomSpread = (Math.random() - 0.5) * armSpread;
+        const angle = armAngle + spiralAngle + (Math.random() - 0.5) * armSpread;
 
-        const angle = armAngle + spiralAngle + randomSpread;
-
-        // Colors: Full spectrum but weighted towards galaxy vibe
-        // Center is hotter (white/yellow), edges are cooler (blue/purple) or varied
         const hue = (distance / maxRadius) * 360 + Math.random() * 50;
         const lightness = 50 + Math.random() * 50;
-        const color = `hsla(${hue}, 80%, ${lightness}%, ${0.5 + Math.random() * 0.5})`;
 
         particles.push({
-          x: 0,
-          y: 0,
-          baseX: 0,
-          baseY: 0, // Will be calculated in loop
-          size: Math.random() * 2 + (1 - t) * 2, // Larger in center
-          color,
+          size: Math.random() * 2 + (1 - t) * 2,
+          color: `hsla(${hue}, 80%, ${lightness}%, ${0.5 + Math.random() * 0.5})`,
           angle,
           distance,
-          speed: rotationSpeed,
-          randomOffset: Math.random() * Math.PI * 2 // Start at random rotation phase
         });
       }
     };
 
-    // Animation Loop
     let globalRotation = 0;
+    const interactionRadius = 150;
 
     const animate = () => {
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.1)'; // Trail effect
       ctx.clearRect(0, 0, width, height);
-
-      // Optional: draw faint background instead of clear for trails? 
-      // For "clean" style, clearRect is better. 
-      // If trails desired, use fillRect with low opacity.
-      // Let's stick to clean for now as trails can look messy on resize.
-
       globalRotation += rotationSpeed;
 
-      particles.forEach(p => {
-        // Calculate base position with global rotation
+      for (const p of particles) {
         const currentAngle = p.angle + globalRotation;
-
-        // Base orbital position
         let x = centerX + Math.cos(currentAngle) * p.distance;
         let y = centerY + Math.sin(currentAngle) * p.distance;
 
-        // Mouse interaction (displacement)
-        // Calculate distance to mouse
         const dx = mouse.x - x;
         const dy = mouse.y - y;
         const dist = Math.sqrt(dx * dx + dy * dy);
-        const interactionRadius = 150;
 
         if (dist < interactionRadius) {
           const force = (interactionRadius - dist) / interactionRadius;
           const angleToMouse = Math.atan2(dy, dx);
-          // Push away slightly
           x -= Math.cos(angleToMouse) * force * 20;
           y -= Math.sin(angleToMouse) * force * 20;
         }
@@ -158,18 +109,16 @@ export default function Galaxy() {
         ctx.arc(x, y, p.size, 0, Math.PI * 2);
         ctx.fillStyle = p.color;
         ctx.fill();
-      });
+      }
 
       animationFrameId = requestAnimationFrame(animate);
     };
 
-    // Event Listeners
     const handleMouseMove = (e: MouseEvent) => {
       if (!cachedRect) return;
       mouse.x = e.clientX - cachedRect.left;
       mouse.y = e.clientY - cachedRect.top;
     };
-
 
     const handleMouseLeave = () => {
       mouse.x = -1000;
@@ -182,7 +131,6 @@ export default function Galaxy() {
     canvas.addEventListener('mouseleave', handleMouseLeave);
     canvas.addEventListener('touchend', handleMouseLeave);
 
-    // Init
     resize();
     updateRect();
     animate();
@@ -190,7 +138,6 @@ export default function Galaxy() {
     return () => {
       window.removeEventListener('resize', resize);
       window.removeEventListener('scroll', handleScroll);
-      if (scrollTimeout) clearTimeout(scrollTimeout);
       canvas.removeEventListener('mousemove', handleMouseMove);
       canvas.removeEventListener('mouseleave', handleMouseLeave);
       canvas.removeEventListener('touchend', handleMouseLeave);
