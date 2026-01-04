@@ -1,20 +1,68 @@
-<header class="flex place-content-between place-items-center pb-2 pt-6">
+<header
+  class="flex flex-wrap place-content-between place-items-center gap-y-2 pb-2 pt-6"
+>
   <a
     href="/"
-    class="text-xl font-semibold hover:text-purple-400 transition-colors"
+    class="text-lg font-semibold hover:text-purple-400 transition-colors"
   >
-    🌱 Cosmic Garden
+    Cosmic Garden
   </a>
-  <nav class="flex gap-x-4">
-    <a href="/" class="hover:text-purple-400 hover:underline">Home</a>
+
+  <button
+    id="menu-toggle"
+    class="sm:hidden p-2 hover:text-purple-400 transition-colors"
+    aria-label="Toggle menu"
+    aria-expanded="false"
+  >
+    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path
+        id="menu-icon"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M4 6h16M4 12h16M4 18h16"></path>
+    </svg>
+  </button>
+
+  <nav
+    id="nav-menu"
+    class="hidden w-full flex-col gap-2 pt-2 sm:flex sm:w-auto sm:flex-row sm:gap-x-4 sm:pt-0"
+  >
+    <a href="/" class="hover:text-purple-400 hover:underline py-1 sm:py-0">Home</a>
     <a
       href="https://blog.cosmic.garden"
-      class="hover:text-purple-400 hover:underline">Blog</a
+      class="hover:text-purple-400 hover:underline py-1 sm:py-0">Blog</a
     >
-    <a href="/posts" class="hover:text-purple-400 hover:underline">Posts</a>
-    <a href="/projects" class="hover:text-purple-400 hover:underline"
-      >Projects</a
+    <a href="/posts" class="hover:text-purple-400 hover:underline py-1 sm:py-0"
+      >Posts</a
     >
-    <a href="/about" class="hover:text-purple-400 hover:underline">About</a>
+    <a
+      href="/projects"
+      class="hover:text-purple-400 hover:underline py-1 sm:py-0">Projects</a
+    >
+    <a href="/about" class="hover:text-purple-400 hover:underline py-1 sm:py-0"
+      >About</a
+    >
   </nav>
 </header>
+
+<script>
+  const menuToggle = document.getElementById("menu-toggle");
+  const navMenu = document.getElementById("nav-menu");
+  const menuIcon = document.getElementById("menu-icon");
+
+  menuToggle?.addEventListener("click", () => {
+    const isExpanded = menuToggle.getAttribute("aria-expanded") === "true";
+    menuToggle.setAttribute("aria-expanded", String(!isExpanded));
+
+    navMenu?.classList.toggle("hidden");
+    navMenu?.classList.toggle("flex");
+
+    if (menuIcon) {
+      menuIcon.setAttribute(
+        "d",
+        isExpanded ? "M4 6h16M4 12h16M4 18h16" : "M6 18L18 6M6 6l12 12",
+      );
+    }
+  });
+</script>
