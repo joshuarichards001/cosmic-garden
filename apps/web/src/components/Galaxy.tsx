@@ -43,7 +43,11 @@ export default function Galaxy() {
     const resize = () => {
       const parent = canvas.parentElement;
       if (parent) {
-        width = parent.clientWidth;
+        const newWidth = parent.clientWidth;
+        // Ignore resize events if width hasn't changed (fixes iOS address bar scroll issue)
+        if (newWidth === width) return;
+
+        width = newWidth;
         const isMobile = width < 640;
         height = isMobile ? width : Math.min(width * 0.7, 550);
         canvas.width = width;
