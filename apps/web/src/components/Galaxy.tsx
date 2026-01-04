@@ -148,7 +148,18 @@ export default function Galaxy() {
       mouse.y = e.clientY - rect.top;
     };
 
+    const handleTouchStart = (e: TouchEvent) => {
+      e.preventDefault();
+      const rect = canvas.getBoundingClientRect();
+      const touch = e.touches[0];
+      if (touch) {
+        mouse.x = touch.clientX - rect.left;
+        mouse.y = touch.clientY - rect.top;
+      }
+    };
+
     const handleTouchMove = (e: TouchEvent) => {
+      e.preventDefault();
       const rect = canvas.getBoundingClientRect();
       const touch = e.touches[0];
       if (touch) {
@@ -164,7 +175,8 @@ export default function Galaxy() {
 
     window.addEventListener('resize', resize);
     canvas.addEventListener('mousemove', handleMouseMove);
-    canvas.addEventListener('touchmove', handleTouchMove);
+    canvas.addEventListener('touchstart', handleTouchStart, { passive: false });
+    canvas.addEventListener('touchmove', handleTouchMove, { passive: false });
     canvas.addEventListener('mouseleave', handleMouseLeave);
     canvas.addEventListener('touchend', handleMouseLeave);
 
@@ -175,6 +187,7 @@ export default function Galaxy() {
     return () => {
       window.removeEventListener('resize', resize);
       canvas.removeEventListener('mousemove', handleMouseMove);
+      canvas.removeEventListener('touchstart', handleTouchStart);
       canvas.removeEventListener('touchmove', handleTouchMove);
       canvas.removeEventListener('mouseleave', handleMouseLeave);
       canvas.removeEventListener('touchend', handleMouseLeave);
