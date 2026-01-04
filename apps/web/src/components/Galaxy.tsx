@@ -125,10 +125,28 @@ export default function Galaxy() {
       mouse.y = -1000;
     };
 
+    const handleTouchStart = (e: TouchEvent) => {
+      e.preventDefault();
+      const touch = e.touches[0];
+      if (!cachedRect || !touch) return;
+      mouse.x = touch.clientX - cachedRect.left;
+      mouse.y = touch.clientY - cachedRect.top;
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      e.preventDefault();
+      const touch = e.touches[0];
+      if (!cachedRect || !touch) return;
+      mouse.x = touch.clientX - cachedRect.left;
+      mouse.y = touch.clientY - cachedRect.top;
+    };
+
     window.addEventListener('resize', resize);
     window.addEventListener('scroll', handleScroll, { passive: true });
     canvas.addEventListener('mousemove', handleMouseMove);
     canvas.addEventListener('mouseleave', handleMouseLeave);
+    canvas.addEventListener('touchstart', handleTouchStart, { passive: false });
+    canvas.addEventListener('touchmove', handleTouchMove, { passive: false });
     canvas.addEventListener('touchend', handleMouseLeave);
 
     resize();
@@ -140,6 +158,8 @@ export default function Galaxy() {
       window.removeEventListener('scroll', handleScroll);
       canvas.removeEventListener('mousemove', handleMouseMove);
       canvas.removeEventListener('mouseleave', handleMouseLeave);
+      canvas.removeEventListener('touchstart', handleTouchStart);
+      canvas.removeEventListener('touchmove', handleTouchMove);
       canvas.removeEventListener('touchend', handleMouseLeave);
       cancelAnimationFrame(animationFrameId);
     };
