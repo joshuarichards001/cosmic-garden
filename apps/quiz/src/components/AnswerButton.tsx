@@ -1,4 +1,4 @@
-import type { AnswerStatus } from '../lib/types';
+import type { AnswerStatus } from "../lib/types";
 
 interface AnswerButtonProps {
   answer: string;
@@ -18,9 +18,10 @@ export default function AnswerButton({
   onClick,
 }: AnswerButtonProps) {
   const getButtonClasses = () => {
-    const base = 'w-full p-4 text-left rounded-lg border transition-all duration-200 flex items-center justify-between';
+    const base =
+      "w-full p-4 text-left rounded-lg border transition-all duration-200 flex items-center justify-between";
 
-    if (status === 'unanswered') {
+    if (status === "unanswered") {
       return `${base} border-quiz-border bg-quiz-surface hover:bg-quiz-border hover:border-quiz-accent cursor-pointer`;
     }
 
@@ -42,14 +43,34 @@ export default function AnswerButton({
       className={getButtonClasses()}
     >
       <span>{answer}</span>
-      {status !== 'unanswered' && isCorrectAnswer && (
-        <svg className="w-5 h-5 text-quiz-correct" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+      {status !== "unanswered" && isCorrectAnswer && (
+        <svg
+          className="w-5 h-5 text-quiz-correct"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M5 13l4 4L19 7"
+          />
         </svg>
       )}
-      {status !== 'unanswered' && isSelected && !isCorrectAnswer && (
-        <svg className="w-5 h-5 text-quiz-incorrect" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+      {status !== "unanswered" && isSelected && !isCorrectAnswer && (
+        <svg
+          className="w-5 h-5 text-quiz-incorrect"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M6 18L18 6M6 6l12 12"
+          />
         </svg>
       )}
     </button>

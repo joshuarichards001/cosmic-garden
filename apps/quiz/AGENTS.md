@@ -51,6 +51,7 @@ apps/quiz/
 ## Standards & Patterns
 
 **Good** — React component with typed props, localStorage persistence:
+
 ```tsx
 interface QuizContainerProps {
   quiz: Quiz;
@@ -59,7 +60,7 @@ interface QuizContainerProps {
 export default function QuizContainer({ quiz }: QuizContainerProps) {
   const [state, setState] = useState<QuizState | null>(null);
   const storageKey = `quiz_state_${quiz.date}`;
-  
+
   useEffect(() => {
     const saved = localStorage.getItem(storageKey);
     if (saved) setState(JSON.parse(saved));
@@ -69,12 +70,13 @@ export default function QuizContainer({ quiz }: QuizContainerProps) {
 ```
 
 **Bad** — Untyped, inline magic strings:
+
 ```tsx
 export default function QuizContainer({ quiz }) {
   const [state, setState] = useState(null);
-  
+
   useEffect(() => {
-    const saved = localStorage.getItem('quiz');
+    const saved = localStorage.getItem("quiz");
     if (saved) setState(JSON.parse(saved));
   }, []);
 }
@@ -83,6 +85,7 @@ export default function QuizContainer({ quiz }) {
 ## Boundaries
 
 ### Always
+
 - Run `pnpm check-types --filter quiz` before finishing
 - Use types from `src/lib/types.ts`
 - Persist quiz state to localStorage keyed by date
@@ -90,6 +93,7 @@ export default function QuizContainer({ quiz }) {
 - Keep React components as islands (`client:load` in Astro)
 
 ### Ask First
+
 - Adding new npm dependencies
 - Modifying Supabase schema (`supabase/migrations/`)
 - Changing RLS policies
@@ -97,6 +101,7 @@ export default function QuizContainer({ quiz }) {
 - Modifying the Edge Function cron schedule
 
 ### Never
+
 - Expose correct answers in server-rendered HTML
 - Commit `.env` or Supabase secrets
 - Delete or weaken existing RLS policies
@@ -113,6 +118,7 @@ export default function QuizContainer({ quiz }) {
 ## Internal Documentation
 
 Read these only when relevant to your task:
+
 - `SPEC.md` — Full product specification (if exists)
 - `supabase/migrations/*.sql` — Database schema details
 - Root `AGENTS.md` — Monorepo-wide conventions

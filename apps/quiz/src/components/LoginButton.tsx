@@ -1,13 +1,13 @@
-import { supabase } from '../lib/supabase';
+import { supabase } from "../lib/supabase";
 
 interface LoginButtonProps {
   className?: string;
 }
 
-export default function LoginButton({ className = '' }: LoginButtonProps) {
+export default function LoginButton({ className = "" }: LoginButtonProps) {
   const handleSignIn = async () => {
     await supabase.auth.signInWithOAuth({
-      provider: 'google',
+      provider: "google",
       options: {
         redirectTo: `${window.location.origin}/api/auth/callback`,
       },

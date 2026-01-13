@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef } from "react";
 
 interface Particle {
   size: number;
@@ -14,7 +14,7 @@ export default function Galaxy() {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
     let animationFrameId: number;
@@ -68,7 +68,8 @@ export default function Galaxy() {
         const spiralAngle = t * 5;
         const armIndex = Math.floor(Math.random() * armCount);
         const armAngle = (armIndex * Math.PI * 2) / armCount;
-        const angle = armAngle + spiralAngle + (Math.random() - 0.5) * armSpread;
+        const angle =
+          armAngle + spiralAngle + (Math.random() - 0.5) * armSpread;
 
         const hue = (distance / maxRadius) * 360 + Math.random() * 50;
         const lightness = 50 + Math.random() * 50;
@@ -141,26 +142,26 @@ export default function Galaxy() {
       mouse.y = touch.clientY - cachedRect.top;
     };
 
-    window.addEventListener('resize', resize);
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    canvas.addEventListener('mousemove', handleMouseMove);
-    canvas.addEventListener('mouseleave', handleMouseLeave);
-    canvas.addEventListener('touchstart', handleTouchStart, { passive: false });
-    canvas.addEventListener('touchmove', handleTouchMove, { passive: false });
-    canvas.addEventListener('touchend', handleMouseLeave);
+    window.addEventListener("resize", resize);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    canvas.addEventListener("mousemove", handleMouseMove);
+    canvas.addEventListener("mouseleave", handleMouseLeave);
+    canvas.addEventListener("touchstart", handleTouchStart, { passive: false });
+    canvas.addEventListener("touchmove", handleTouchMove, { passive: false });
+    canvas.addEventListener("touchend", handleMouseLeave);
 
     resize();
     updateRect();
     animate();
 
     return () => {
-      window.removeEventListener('resize', resize);
-      window.removeEventListener('scroll', handleScroll);
-      canvas.removeEventListener('mousemove', handleMouseMove);
-      canvas.removeEventListener('mouseleave', handleMouseLeave);
-      canvas.removeEventListener('touchstart', handleTouchStart);
-      canvas.removeEventListener('touchmove', handleTouchMove);
-      canvas.removeEventListener('touchend', handleMouseLeave);
+      window.removeEventListener("resize", resize);
+      window.removeEventListener("scroll", handleScroll);
+      canvas.removeEventListener("mousemove", handleMouseMove);
+      canvas.removeEventListener("mouseleave", handleMouseLeave);
+      canvas.removeEventListener("touchstart", handleTouchStart);
+      canvas.removeEventListener("touchmove", handleTouchMove);
+      canvas.removeEventListener("touchend", handleMouseLeave);
       cancelAnimationFrame(animationFrameId);
     };
   }, []);

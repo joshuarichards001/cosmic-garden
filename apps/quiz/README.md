@@ -26,6 +26,7 @@ cp .env.example .env
 ```
 
 Required variables:
+
 - `PUBLIC_SUPABASE_URL` - Your Supabase project URL
 - `PUBLIC_SUPABASE_ANON_KEY` - Your Supabase anonymous key
 - `SUPABASE_SERVICE_ROLE_KEY` - Your Supabase service role key (server-side only)
@@ -36,10 +37,11 @@ Required variables:
 1. Create a new Supabase project at [supabase.com](https://supabase.com)
 
 2. Run the database migration:
+
    ```bash
    # Using Supabase CLI
    supabase db push
-   
+
    # Or manually run the SQL in supabase/migrations/001_initial_schema.sql
    ```
 
@@ -49,6 +51,7 @@ Required variables:
    - Set redirect URL to `https://your-project.supabase.co/auth/v1/callback`
 
 4. Deploy the edge function:
+
    ```bash
    supabase functions deploy fetch-daily-quiz
    ```

@@ -1,5 +1,8 @@
-import type { AnswerStatus, QuizQuestion as QuizQuestionType } from '../lib/types';
-import AnswerButton from './AnswerButton';
+import type {
+  AnswerStatus,
+  QuizQuestion as QuizQuestionType,
+} from "../lib/types";
+import AnswerButton from "./AnswerButton";
 
 interface QuizQuestionProps {
   question: QuizQuestionType;
@@ -46,7 +49,7 @@ export default function QuizQuestion({
             status={status}
             isCorrectAnswer={answer === question.correctAnswer}
             isSelected={answer === selectedAnswer}
-            disabled={status !== 'unanswered'}
+            disabled={status !== "unanswered"}
             onClick={() => onAnswer(answer)}
           />
         ))}

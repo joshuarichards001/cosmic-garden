@@ -2,19 +2,19 @@ export interface TriviaQuestion {
   category: string;
   id: string;
   tags: string[];
-  difficulty: 'easy' | 'medium' | 'hard';
+  difficulty: "easy" | "medium" | "hard";
   regions: string[];
   isNiche: boolean;
   question: { text: string };
   correctAnswer: string;
   incorrectAnswers: string[];
-  type: 'text_choice';
+  type: "text_choice";
 }
 
 export interface QuizQuestion {
   id: string;
   category: string;
-  difficulty: 'easy' | 'medium' | 'hard';
+  difficulty: "easy" | "medium" | "hard";
   question: string;
   correctAnswer: string;
   answers: string[];
@@ -50,4 +50,4 @@ export interface QuizState {
   completedAt?: string;
 }
 
-export type AnswerStatus = 'unanswered' | 'correct' | 'incorrect';
+export type AnswerStatus = "unanswered" | "correct" | "incorrect";

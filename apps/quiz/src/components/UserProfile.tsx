@@ -1,6 +1,6 @@
-import type { User } from '@supabase/supabase-js';
-import { useEffect, useState } from 'react';
-import { supabase } from '../lib/supabase';
+import type { User } from "@supabase/supabase-js";
+import { useEffect, useState } from "react";
+import { supabase } from "../lib/supabase";
 
 export default function UserProfile() {
   const [user, setUser] = useState<User | null>(null);
@@ -13,7 +13,9 @@ export default function UserProfile() {
       setLoading(false);
     });
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
     });
 
@@ -22,7 +24,7 @@ export default function UserProfile() {
 
   const handleSignIn = async () => {
     await supabase.auth.signInWithOAuth({
-      provider: 'google',
+      provider: "google",
       options: {
         redirectTo: `${window.location.origin}/api/auth/callback`,
       },
@@ -35,7 +37,9 @@ export default function UserProfile() {
   };
 
   if (loading) {
-    return <div className="w-8 h-8 rounded-full bg-quiz-surface animate-pulse" />;
+    return (
+      <div className="w-8 h-8 rounded-full bg-quiz-surface animate-pulse" />
+    );
   }
 
   if (!user) {
@@ -79,8 +83,12 @@ export default function UserProfile() {
           />
           <div className="absolute right-0 mt-2 w-48 bg-quiz-surface border border-quiz-border rounded-lg shadow-lg z-50">
             <div className="px-4 py-3 border-b border-quiz-border">
-              <p className="text-sm font-medium text-quiz-text truncate">{displayName}</p>
-              <p className="text-xs text-quiz-text-muted truncate">{user.email}</p>
+              <p className="text-sm font-medium text-quiz-text truncate">
+                {displayName}
+              </p>
+              <p className="text-xs text-quiz-text-muted truncate">
+                {user.email}
+              </p>
             </div>
             <div className="py-1">
               <a

@@ -4,7 +4,7 @@ import Layout from "../layouts/Layout.astro";
 import { supabase } from "../lib/supabase";
 import type { Quiz } from "../lib/types";
 
-const today = new Date().toISOString().split("T")[0];
+const today = new Date().toISOString().split("T")[0] as string;
 
 const { data: quiz, error } = await supabase
   .from("quizzes")

@@ -94,6 +94,7 @@ Run all commands from the repository root:
 ### `@repo/eslint-config`
 
 Exports three configurations:
+
 - `@repo/eslint-config/base` – Base TypeScript config
 - `@repo/eslint-config/vite-react` – For Vite React apps
 - `@repo/eslint-config/react-internal` – For internal React packages
