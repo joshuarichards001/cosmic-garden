@@ -1,0 +1,22 @@
+{
+  "name": "quiz-cosmic-garden",
+  "main": "./dist/_worker.js/index.js",
+  "compatibility_date": "2024-12-20",
+  "compatibility_flags": [
+    "nodejs_compat",
+    "expose_global_message_channel"
+  ],
+  "assets": {
+    "binding": "ASSETS",
+    "directory": "./dist"
+  },
+  "observability": {
+    "enabled": true
+  },
+  "routes": [
+    {
+      "pattern": "quiz.cosmic.garden",
+      "custom_domain": true
+    }
+  ]
+}
