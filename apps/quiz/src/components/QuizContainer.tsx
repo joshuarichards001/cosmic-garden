@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useState } from "react";
 import type { AnswerStatus, Quiz, QuizState } from "../lib/types";
 import QuizQuestion from "./QuizQuestion";
 import QuizResults from "./QuizResults";
@@ -7,42 +7,11 @@ interface QuizContainerProps {
   quiz: Quiz;
 }
 
-const STORAGE_KEY_PREFIX = "quiz_state_";
-const FIRST_ATTEMPT_KEY_PREFIX = "quiz_first_attempt_";
-
 export default function QuizContainer({ quiz }: QuizContainerProps) {
   const [state, setState] = useState<QuizState | null>(null);
   const [answerStatus, setAnswerStatus] = useState<AnswerStatus>("unanswered");
   const [isFirstAttempt, setIsFirstAttempt] = useState(true);
   const [started, setStarted] = useState(false);
-
-  const storageKey = `${STORAGE_KEY_PREFIX}${quiz.date}`;
-  const firstAttemptKey = `${FIRST_ATTEMPT_KEY_PREFIX}${quiz.date}`;
-
-  useEffect(() => {
-    const savedState = localStorage.getItem(storageKey);
-    const wasFirstAttemptUsed = localStorage.getItem(firstAttemptKey);
-
-    if (wasFirstAttemptUsed) {
-      setIsFirstAttempt(false);
-    }
-
-    if (savedState) {
-      const parsed = JSON.parse(savedState) as QuizState;
-      if (parsed.quizId === quiz.id) {
-        setState(parsed);
-        setStarted(true);
-      }
-    }
-  }, [quiz.id, quiz.date, storageKey, firstAttemptKey]);
-
-  const saveState = useCallback(
-    (newState: QuizState) => {
-      localStorage.setItem(storageKey, JSON.stringify(newState));
-      setState(newState);
-    },
-    [storageKey],
-  );
 
   const startQuiz = () => {
     const newState: QuizState = {
@@ -51,7 +20,7 @@ export default function QuizContainer({ quiz }: QuizContainerProps) {
       answers: new Array(quiz.questions.length).fill(null),
       startedAt: new Date().toISOString(),
     };
-    saveState(newState);
+    setState(newState);
     setStarted(true);
   };
 
@@ -79,12 +48,8 @@ export default function QuizContainer({ quiz }: QuizContainerProps) {
         completedAt: isLastQuestion ? new Date().toISOString() : undefined,
       };
 
-      saveState(newState);
+      setState(newState);
       setAnswerStatus("unanswered");
-
-      if (isLastQuestion && isFirstAttempt) {
-        localStorage.setItem(firstAttemptKey, "true");
-      }
     }, 1500);
   };
 
@@ -96,7 +61,7 @@ export default function QuizContainer({ quiz }: QuizContainerProps) {
       answers: new Array(quiz.questions.length).fill(null),
       startedAt: new Date().toISOString(),
     };
-    saveState(newState);
+    setState(newState);
     setAnswerStatus("unanswered");
   };
 

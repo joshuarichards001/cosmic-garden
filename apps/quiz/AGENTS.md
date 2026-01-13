@@ -50,7 +50,7 @@ apps/quiz/
 
 ## Standards & Patterns
 
-**Good** — React component with typed props, localStorage persistence:
+**Good** — React component with typed props, in-memory state:
 
 ```tsx
 interface QuizContainerProps {
@@ -59,26 +59,17 @@ interface QuizContainerProps {
 
 export default function QuizContainer({ quiz }: QuizContainerProps) {
   const [state, setState] = useState<QuizState | null>(null);
-  const storageKey = `quiz_state_${quiz.date}`;
-
-  useEffect(() => {
-    const saved = localStorage.getItem(storageKey);
-    if (saved) setState(JSON.parse(saved));
-  }, [storageKey]);
+  // Quiz state is kept in memory only - must complete in one sitting
   // ...
 }
 ```
 
-**Bad** — Untyped, inline magic strings:
+**Bad** — Untyped props:
 
 ```tsx
 export default function QuizContainer({ quiz }) {
   const [state, setState] = useState(null);
-
-  useEffect(() => {
-    const saved = localStorage.getItem("quiz");
-    if (saved) setState(JSON.parse(saved));
-  }, []);
+  // ...
 }
 ```
 
@@ -88,7 +79,7 @@ export default function QuizContainer({ quiz }) {
 
 - Run `pnpm check-types --filter quiz` before finishing
 - Use types from `src/lib/types.ts`
-- Persist quiz state to localStorage keyed by date
+- Keep quiz state in memory only (no localStorage persistence — must complete in one sitting)
 - Use `quiz-*` Tailwind color tokens for theming
 - Keep React components as islands (`client:load` in Astro)
 
