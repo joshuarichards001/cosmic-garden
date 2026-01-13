@@ -38,7 +38,7 @@ export default function UserProfile() {
 
   if (loading) {
     return (
-      <div className="w-8 h-8 rounded-full bg-quiz-surface animate-pulse" />
+      <div className="w-8 h-8 m-1 rounded-full bg-quiz-surface animate-pulse" />
     );
   }
 
