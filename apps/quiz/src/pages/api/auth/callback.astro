@@ -1,8 +1,3 @@
----
-// This page handles OAuth callbacks from Supabase/Google
-// Tokens may come as hash fragments (implicit flow) which require client-side handling
----
-
 <html lang="en">
   <head>
     <meta charset="utf-8" />
@@ -14,8 +9,6 @@
     <script>
       import { supabase } from "../../../lib/supabase";
 
-      // Handle the OAuth callback
-      // Supabase client automatically detects hash fragments and establishes session
       async function handleCallback() {
         const { error } = await supabase.auth.getSession();
 
@@ -23,7 +16,6 @@
           console.error("Auth callback error:", error);
         }
 
-        // Redirect to home page
         window.location.href = "/";
       }
 

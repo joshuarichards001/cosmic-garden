@@ -1,5 +1,6 @@
-import { useState } from "react";
-import type { AnswerStatus, Quiz, QuizState } from "../lib/types";
+import { useEffect, useState } from "react";
+import { supabase } from "../lib/supabase";
+import type { AnswerStatus, Quiz, QuizState, Score } from "../lib/types";
 import QuizQuestion from "./QuizQuestion";
 import QuizResults from "./QuizResults";
 
@@ -8,25 +9,46 @@ interface QuizContainerProps {
 }
 
 export default function QuizContainer({ quiz }: QuizContainerProps) {
-  const [state, setState] = useState<QuizState | null>(null);
+  const [state, setState] = useState<QuizState>(() => ({
+    quizId: quiz.id,
+    currentQuestion: 0,
+    answers: new Array(quiz.questions.length).fill(null),
+    startedAt: new Date().toISOString(),
+  }));
   const [answerStatus, setAnswerStatus] = useState<AnswerStatus>("unanswered");
-  const [currentSelectedAnswer, setCurrentSelectedAnswer] = useState<string | null>(null);
+  const [currentSelectedAnswer, setCurrentSelectedAnswer] = useState<
+    string | null
+  >(null);
   const [isFirstAttempt, setIsFirstAttempt] = useState(true);
-  const [started, setStarted] = useState(false);
+  const [existingScore, setExistingScore] = useState<Score | null>(null);
+  const [checkingExisting, setCheckingExisting] = useState(true);
 
-  const startQuiz = () => {
-    const newState: QuizState = {
-      quizId: quiz.id,
-      currentQuestion: 0,
-      answers: new Array(quiz.questions.length).fill(null),
-      startedAt: new Date().toISOString(),
+  useEffect(() => {
+    const checkExistingScore = async () => {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      if (session?.user) {
+        const { data: score } = await supabase
+          .from("scores")
+          .select("*")
+          .eq("user_id", session.user.id)
+          .eq("quiz_id", quiz.id)
+          .single();
+
+        if (score) {
+          setExistingScore(score as Score);
+          setIsFirstAttempt(false);
+        }
+      }
+      setCheckingExisting(false);
     };
-    setState(newState);
-    setStarted(true);
-  };
+
+    checkExistingScore();
+  }, [quiz.id]);
 
   const handleAnswer = (answer: string) => {
-    if (!state || answerStatus !== "unanswered") return;
+    if (answerStatus !== "unanswered") return;
 
     const currentQuestion = quiz.questions[state.currentQuestion];
     if (!currentQuestion) return;
@@ -57,43 +79,33 @@ export default function QuizContainer({ quiz }: QuizContainerProps) {
   };
 
   const handleReplay = () => {
+    setExistingScore(null);
     setIsFirstAttempt(false);
-    const newState: QuizState = {
+    setState({
       quizId: quiz.id,
       currentQuestion: 0,
       answers: new Array(quiz.questions.length).fill(null),
       startedAt: new Date().toISOString(),
-    };
-    setState(newState);
+    });
     setAnswerStatus("unanswered");
   };
 
-  const formatDate = (dateStr: string) => {
-    return new Date(dateStr).toLocaleDateString("en-US", {
-      weekday: "long",
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-  };
-
-  if (!started || !state) {
+  if (checkingExisting) {
     return (
-      <div className="text-center space-y-8 py-12">
-        <div>
-          <h1 className="text-3xl font-bold text-quiz-text mb-2">Daily Quiz</h1>
-          <p className="text-quiz-text-muted">{formatDate(quiz.date)}</p>
-        </div>
-
-        <p className="text-quiz-text-muted">10 questions • No time limit</p>
-
-        <button
-          onClick={startQuiz}
-          className="px-8 py-4 text-lg font-medium text-white bg-quiz-accent hover:bg-quiz-accent-hover rounded-lg transition-colors"
-        >
-          Start Quiz
-        </button>
+      <div className="flex items-center justify-center py-12">
+        <div className="text-quiz-text-muted">Loading...</div>
       </div>
+    );
+  }
+
+  if (existingScore) {
+    return (
+      <QuizResults
+        quiz={quiz}
+        answers={existingScore.answers}
+        onReplay={handleReplay}
+        isFirstAttempt={false}
+      />
     );
   }
 
@@ -111,14 +123,29 @@ export default function QuizContainer({ quiz }: QuizContainerProps) {
   const currentQuestion = quiz.questions[state.currentQuestion];
   if (!currentQuestion) return null;
 
+  const formatDate = (dateStr: string) => {
+    return new Date(dateStr).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  };
+
   return (
-    <QuizQuestion
-      question={currentQuestion}
-      questionNumber={state.currentQuestion + 1}
-      totalQuestions={quiz.questions.length}
-      selectedAnswer={currentSelectedAnswer ?? state.answers[state.currentQuestion] ?? null}
-      status={answerStatus}
-      onAnswer={handleAnswer}
-    />
+    <div className="space-y-6">
+      <h1 className="text-2xl font-bold text-quiz-text text-center">
+        {formatDate(quiz.date)}
+      </h1>
+      <QuizQuestion
+        question={currentQuestion}
+        questionNumber={state.currentQuestion + 1}
+        totalQuestions={quiz.questions.length}
+        selectedAnswer={
+          currentSelectedAnswer ?? state.answers[state.currentQuestion] ?? null
+        }
+        status={answerStatus}
+        onAnswer={handleAnswer}
+      />
+    </div>
   );
 }

@@ -1,25 +1,12 @@
 ---
+import QuizList from "../../components/QuizList";
 import Layout from "../../layouts/Layout.astro";
-import { getCategoryColor } from "../../lib/categoryColors";
 import { supabase } from "../../lib/supabase";
 
 const { data: quizzes, error } = await supabase
   .from("quizzes")
   .select("id, date, questions")
   .order("date", { ascending: false });
-
-const formatDate = (dateStr: string) => {
-  return new Date(dateStr).toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  });
-};
-
-const getCategories = (questions: { category: string }[]) => {
-  const categories = new Set(questions.map((q) => q.category));
-  return Array.from(categories).slice(0, 3);
-};
 ---
 
 <Layout
@@ -36,34 +23,7 @@ const getCategories = (questions: { category: string }[]) => {
         <p class="text-quiz-text-muted">No quizzes available yet.</p>
       </div>
     ) : (
-      <div class="space-y-3">
-        {quizzes.map((quiz) => {
-          const categories = getCategories(quiz.questions);
-          return (
-            <a
-              href={`/history/${quiz.date}`}
-              class="block p-4 bg-quiz-surface border border-quiz-border rounded-lg hover:border-quiz-accent transition-colors"
-            >
-              <span class="font-medium text-quiz-text block mb-2">
-                {formatDate(quiz.date)}
-              </span>
-              <div class="flex flex-wrap gap-2">
-                {categories.map((cat) => (
-                  <span
-                    class:list={[
-                      "px-2 py-1 text-xs font-medium rounded-full",
-                      getCategoryColor(cat).bg,
-                      getCategoryColor(cat).text,
-                    ]}
-                  >
-                    {cat}
-                  </span>
-                ))}
-              </div>
-            </a>
-          );
-        })}
-      </div>
+      <QuizList quizzes={quizzes} client:load />
     )
   }
 </Layout>

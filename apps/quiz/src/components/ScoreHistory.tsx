@@ -5,9 +5,9 @@ interface ScoreWithQuiz {
   id: string;
   score: number;
   completed_at: string;
-  quiz: {
+  quizzes: {
     date: string;
-  };
+  } | null;
 }
 
 export default function ScoreHistory() {
@@ -32,7 +32,7 @@ export default function ScoreHistory() {
           id,
           score,
           completed_at,
-          quiz:quizzes(date)
+          quizzes(date)
         `,
         )
         .eq("user_id", session.user.id)
@@ -105,11 +105,13 @@ export default function ScoreHistory() {
             {scores.map((score) => (
               <a
                 key={score.id}
-                href={`/history/${score.quiz.date}`}
+                href={`/history/${score.quizzes?.date}`}
                 className="flex items-center justify-between p-4 bg-quiz-surface border border-quiz-border rounded-lg hover:border-quiz-accent transition-colors"
               >
                 <span className="text-quiz-text">
-                  {formatDate(score.quiz.date)}
+                  {score.quizzes?.date
+                    ? formatDate(score.quizzes.date)
+                    : "Unknown"}
                 </span>
                 <span className="text-quiz-accent font-medium">
                   {score.score}/10
