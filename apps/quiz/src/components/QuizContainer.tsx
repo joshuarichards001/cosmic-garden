@@ -111,10 +111,7 @@ export default function QuizContainer({ quiz }: QuizContainerProps) {
           <p className="text-quiz-text-muted">{formatDate(quiz.date)}</p>
         </div>
 
-        <div className="space-y-2 text-quiz-text-muted">
-          <p>10 questions • No time limit</p>
-          <p>3 easy • 4 medium • 3 hard</p>
-        </div>
+        <p className="text-quiz-text-muted">10 questions • No time limit</p>
 
         <button
           onClick={startQuiz}

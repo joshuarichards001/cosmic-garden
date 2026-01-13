@@ -18,31 +18,13 @@ export default function QuizQuestion({
   status,
   onAnswer,
 }: QuizQuestionProps) {
-  const getDifficultyColor = (difficulty: string) => {
-    switch (difficulty) {
-      case 'easy':
-        return 'text-quiz-easy';
-      case 'medium':
-        return 'text-quiz-medium';
-      case 'hard':
-        return 'text-quiz-hard';
-      default:
-        return 'text-quiz-text-muted';
-    }
-  };
-
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between text-sm">
         <span className="text-quiz-text-muted">
           Question {questionNumber} of {totalQuestions}
         </span>
-        <div className="flex items-center gap-2">
-          <span className="text-quiz-text-muted">{question.category}</span>
-          <span className={`capitalize ${getDifficultyColor(question.difficulty)}`}>
-            {question.difficulty}
-          </span>
-        </div>
+        <span className="text-quiz-text-muted">{question.category}</span>
       </div>
 
       <div className="w-full bg-quiz-border rounded-full h-1">
