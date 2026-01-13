@@ -1,11 +1,6 @@
 {
   "name": "quiz",
   "main": "./dist/_worker.js/index.js",
-  "vars": {
-    "PUBLIC_SUPABASE_URL": "https://sievncmoymwzeyhdbemr.supabase.co",
-    "PUBLIC_SUPABASE_ANON_KEY": "sb_publishable__Axl7vwLcMiGISU7-ZR6tA_XVTIDsLO",
-    "PUBLIC_APP_URL": "https://quiz.cosmic.garden"
-  },
   "compatibility_date": "2024-12-20",
   "compatibility_flags": [
     "nodejs_compat",
