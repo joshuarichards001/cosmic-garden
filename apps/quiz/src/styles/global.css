@@ -1,0 +1,27 @@
+@import "@repo/tailwind-config";
+
+@theme {
+  --color-quiz-bg: #0f0f0f;
+  --color-quiz-surface: #1a1a1a;
+  --color-quiz-border: #2a2a2a;
+  --color-quiz-text: #e5e5e5;
+  --color-quiz-text-muted: #a3a3a3;
+  --color-quiz-accent: #a855f7;
+  --color-quiz-accent-hover: #9333ea;
+  --color-quiz-correct: #22c55e;
+  --color-quiz-incorrect: #ef4444;
+  --color-quiz-easy: #22c55e;
+  --color-quiz-medium: #f59e0b;
+  --color-quiz-hard: #ef4444;
+}
+
+html {
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial,
+    sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+body {
+  background-color: var(--color-quiz-bg);
+  color: var(--color-quiz-text);
+}

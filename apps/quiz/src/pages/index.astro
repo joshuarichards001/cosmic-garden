@@ -1,0 +1,47 @@
+---
+import QuizContainer from "../components/QuizContainer";
+import Layout from "../layouts/Layout.astro";
+import { supabase } from "../lib/supabase";
+import type { Quiz } from "../lib/types";
+
+const today = new Date().toISOString().split("T")[0];
+
+const { data: quiz, error } = await supabase
+  .from("quizzes")
+  .select("*")
+  .eq("date", today)
+  .single();
+
+const formattedDate = new Date(today).toLocaleDateString("en-US", {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+});
+---
+
+<Layout
+  title={`Daily Quiz - ${formattedDate}`}
+  description={`Challenge yourself with today's daily trivia quiz. 10 questions covering general knowledge, history, science, and more. Play free, track your scores.`}
+  canonicalUrl={`https://quiz.cosmic.garden/`}
+>
+  {
+    error || !quiz ? (
+      <div class="text-center py-12">
+        <h1 class="text-3xl font-bold text-quiz-text mb-4">
+          No Quiz Available
+        </h1>
+        <p class="text-quiz-text-muted mb-6">
+          Today's quiz hasn't been generated yet. Check back soon!
+        </p>
+        <a
+          href="/history"
+          class="text-quiz-accent hover:text-quiz-accent-hover"
+        >
+          Browse past quizzes →
+        </a>
+      </div>
+    ) : (
+      <QuizContainer quiz={quiz as Quiz} client:load />
+    )
+  }
+</Layout>

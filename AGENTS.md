@@ -11,6 +11,7 @@ Cosmic Garden is a pnpm monorepo managed by Turborepo containing multiple apps a
 ```
 cosmic-garden/
 ├── apps/
+│   ├── quiz/         # Astro + React daily trivia quiz app
 │   ├── web/          # Astro + React website with Cosmic Garden content
 │   └── write/        # Vite + React (rolldown-vite) writing app
 ├── packages/
@@ -57,6 +58,22 @@ Run all commands from the repository root:
 - **Components**: `src/components/` — `Post.astro` (wrapper), `NotePost.astro`, `PhotoPost.astro`, `AudioPost.astro`, `VideoPost.astro`
 - **Pages**: `/posts/` (feed index), `/posts/[slug]/` (individual post)
 - **RSS**: `/posts.xml`
+
+### `apps/quiz` (Astro + React)
+
+- Uses Astro 5 with `@astrojs/react` integration
+- **Backend**: Supabase (Database, Auth, Edge Functions)
+- Deployed to Cloudflare Workers
+- **External API**: The Trivia API v2 (`https://the-trivia-api.com/v2/questions`)
+- **Database Tables**: `quizzes`, `users`, `scores` (Supabase)
+- **Auth**: Google OAuth only via Supabase Auth
+- **Features**:
+  - Daily quiz with 10 questions (3 easy, 4 medium, 3 hard)
+  - Score tracking and history for authenticated users
+  - Anonymous play supported, auth required to save scores
+- **Pages**: `/` (today's quiz), `/history` (archive), `/quiz/[date]` (specific quiz), `/profile` (user scores)
+- **Edge Function**: `fetch-daily-quiz` runs daily at midnight UTC to fetch next day's questions
+- **Design**: Dark mode only with purple accents, mobile-first
 
 ### `apps/write` (Vite + React)
 

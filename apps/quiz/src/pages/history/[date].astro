@@ -1,0 +1,86 @@
+---
+import QuizContainer from "../../components/QuizContainer";
+import Layout from "../../layouts/Layout.astro";
+import { supabase } from "../../lib/supabase";
+import type { Quiz } from "../../lib/types";
+
+export const prerender = false;
+
+const { date } = Astro.params;
+
+if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+  return Astro.redirect("/history");
+}
+
+const { data: quiz, error } = await supabase
+  .from("quizzes")
+  .select("*")
+  .eq("date", date)
+  .single();
+
+if (error || !quiz) {
+  return Astro.redirect("/history");
+}
+
+const formattedDate = new Date(date).toLocaleDateString("en-US", {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+});
+
+const { data: prevQuiz } = await supabase
+  .from("quizzes")
+  .select("date")
+  .lt("date", date)
+  .order("date", { ascending: false })
+  .limit(1)
+  .single();
+
+const { data: nextQuiz } = await supabase
+  .from("quizzes")
+  .select("date")
+  .gt("date", date)
+  .order("date", { ascending: true })
+  .limit(1)
+  .single();
+---
+
+<Layout
+  title={`Daily Quiz - ${formattedDate}`}
+  description={`Play the daily trivia quiz from ${formattedDate}. 10 questions testing your general knowledge. See how you compare to other players.`}
+  canonicalUrl={`https://quiz.cosmic.garden/history/${date}`}
+>
+  <nav class="flex items-center justify-between mb-6 text-sm">
+    <ol class="flex items-center gap-2 text-quiz-text-muted">
+      <li><a href="/" class="hover:text-quiz-text">Home</a></li>
+      <li>/</li>
+      <li><a href="/history" class="hover:text-quiz-text">Archive</a></li>
+      <li>/</li>
+      <li class="text-quiz-text">{formattedDate}</li>
+    </ol>
+    <div class="flex items-center gap-4">
+      {
+        prevQuiz && (
+          <a
+            href={`/history/${prevQuiz.date}`}
+            class="text-quiz-text-muted hover:text-quiz-accent"
+          >
+            ← Previous
+          </a>
+        )
+      }
+      {
+        nextQuiz && (
+          <a
+            href={`/history/${nextQuiz.date}`}
+            class="text-quiz-text-muted hover:text-quiz-accent"
+          >
+            Next →
+          </a>
+        )
+      }
+    </div>
+  </nav>
+
+  <QuizContainer quiz={quiz as Quiz} client:load />
+</Layout>

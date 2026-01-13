@@ -1,0 +1,17 @@
+---
+import UserProfile from './UserProfile';
+---
+
+<header class="border-b border-quiz-border bg-quiz-surface/50 backdrop-blur-sm sticky top-0 z-50">
+  <nav class="mx-auto max-w-3xl px-4 py-4 flex items-center justify-between">
+    <div class="flex items-center gap-6">
+      <a href="/" class="text-xl font-bold text-quiz-accent hover:text-quiz-accent-hover transition-colors">
+        Daily Quiz
+      </a>
+      <a href="/history" class="text-quiz-text-muted hover:text-quiz-text transition-colors">
+        History
+      </a>
+    </div>
+    <UserProfile client:load />
+  </nav>
+</header>

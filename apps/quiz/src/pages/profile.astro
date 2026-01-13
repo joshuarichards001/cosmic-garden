@@ -1,0 +1,48 @@
+---
+import Layout from "../layouts/Layout.astro";
+import ScoreHistory from "../components/ScoreHistory";
+import LoginButton from "../components/LoginButton";
+---
+
+<Layout title="Profile" description="View your quiz history and statistics.">
+  <h1 class="text-3xl font-bold text-quiz-text mb-2">Your Profile</h1>
+  <p class="text-quiz-text-muted mb-8">Track your quiz performance</p>
+
+  <div id="auth-check" class="hidden">
+    <ScoreHistory client:load />
+  </div>
+
+  <div id="login-prompt" class="text-center py-12">
+    <p class="text-quiz-text-muted mb-6">
+      Sign in to view your quiz history and stats
+    </p>
+    <LoginButton client:load />
+  </div>
+
+  <script>
+    import { supabase } from "../lib/supabase";
+
+    const authCheck = document.getElementById("auth-check");
+    const loginPrompt = document.getElementById("login-prompt");
+
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
+        authCheck?.classList.remove("hidden");
+        loginPrompt?.classList.add("hidden");
+      } else {
+        authCheck?.classList.add("hidden");
+        loginPrompt?.classList.remove("hidden");
+      }
+    });
+
+    supabase.auth.onAuthStateChange((_event, session) => {
+      if (session) {
+        authCheck?.classList.remove("hidden");
+        loginPrompt?.classList.add("hidden");
+      } else {
+        authCheck?.classList.add("hidden");
+        loginPrompt?.classList.remove("hidden");
+      }
+    });
+  </script>
+</Layout>
