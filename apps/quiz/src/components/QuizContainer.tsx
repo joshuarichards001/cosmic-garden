@@ -10,6 +10,7 @@ interface QuizContainerProps {
 export default function QuizContainer({ quiz }: QuizContainerProps) {
   const [state, setState] = useState<QuizState | null>(null);
   const [answerStatus, setAnswerStatus] = useState<AnswerStatus>("unanswered");
+  const [currentSelectedAnswer, setCurrentSelectedAnswer] = useState<string | null>(null);
   const [isFirstAttempt, setIsFirstAttempt] = useState(true);
   const [started, setStarted] = useState(false);
 
@@ -31,6 +32,7 @@ export default function QuizContainer({ quiz }: QuizContainerProps) {
     if (!currentQuestion) return;
     const isCorrect = answer === currentQuestion.correctAnswer;
 
+    setCurrentSelectedAnswer(answer);
     setAnswerStatus(isCorrect ? "correct" : "incorrect");
 
     const newAnswers = [...state.answers];
@@ -50,7 +52,8 @@ export default function QuizContainer({ quiz }: QuizContainerProps) {
 
       setState(newState);
       setAnswerStatus("unanswered");
-    }, 1500);
+      setCurrentSelectedAnswer(null);
+    }, 1000);
   };
 
   const handleReplay = () => {
@@ -113,7 +116,7 @@ export default function QuizContainer({ quiz }: QuizContainerProps) {
       question={currentQuestion}
       questionNumber={state.currentQuestion + 1}
       totalQuestions={quiz.questions.length}
-      selectedAnswer={state.answers[state.currentQuestion] ?? null}
+      selectedAnswer={currentSelectedAnswer ?? state.answers[state.currentQuestion] ?? null}
       status={answerStatus}
       onAnswer={handleAnswer}
     />

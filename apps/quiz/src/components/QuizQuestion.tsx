@@ -1,3 +1,4 @@
+import { getCategoryColor } from "../lib/categoryColors";
 import type {
   AnswerStatus,
   QuizQuestion as QuizQuestionType,
@@ -27,7 +28,11 @@ export default function QuizQuestion({
         <span className="text-quiz-text-muted">
           Question {questionNumber} of {totalQuestions}
         </span>
-        <span className="text-quiz-text-muted">{question.category}</span>
+        <span
+          className={`px-2 py-0.5 text-xs font-medium rounded-full ${getCategoryColor(question.category).bg} ${getCategoryColor(question.category).text}`}
+        >
+          {question.category}
+        </span>
       </div>
 
       <div className="w-full bg-quiz-border rounded-full h-1">

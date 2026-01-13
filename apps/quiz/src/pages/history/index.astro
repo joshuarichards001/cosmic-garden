@@ -1,5 +1,6 @@
 ---
 import Layout from "../../layouts/Layout.astro";
+import { getCategoryColor } from "../../lib/categoryColors";
 import { supabase } from "../../lib/supabase";
 
 const { data: quizzes, error } = await supabase
@@ -48,7 +49,13 @@ const getCategories = (questions: { category: string }[]) => {
               </span>
               <div class="flex flex-wrap gap-2">
                 {categories.map((cat) => (
-                  <span class="px-2 py-1 text-xs bg-quiz-border rounded text-quiz-text-muted">
+                  <span
+                    class:list={[
+                      "px-2 py-1 text-xs font-medium rounded-full",
+                      getCategoryColor(cat).bg,
+                      getCategoryColor(cat).text,
+                    ]}
+                  >
                     {cat}
                   </span>
                 ))}
