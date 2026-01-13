@@ -1,11 +1,33 @@
 ---
-import { supabase } from "../../../lib/supabase";
-
-const code = Astro.url.searchParams.get("code");
-
-if (code) {
-  await supabase.auth.exchangeCodeForSession(code);
-}
-
-return Astro.redirect("/");
+// This page handles OAuth callbacks from Supabase/Google
+// Tokens may come as hash fragments (implicit flow) which require client-side handling
 ---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Signing in...</title>
+  </head>
+  <body>
+    <p>Signing in...</p>
+    <script>
+      import { supabase } from "../../../lib/supabase";
+
+      // Handle the OAuth callback
+      // Supabase client automatically detects hash fragments and establishes session
+      async function handleCallback() {
+        const { error } = await supabase.auth.getSession();
+
+        if (error) {
+          console.error("Auth callback error:", error);
+        }
+
+        // Redirect to home page
+        window.location.href = "/";
+      }
+
+      handleCallback();
+    </script>
+  </body>
+</html>
