@@ -42,7 +42,21 @@ export default function ProfileActions() {
 
     setDeleting(true);
     try {
-      const { error } = await supabase.functions.invoke("delete-account");
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      if (!session) {
+        alert("You must be signed in to delete your account.");
+        setDeleting(false);
+        return;
+      }
+
+      const { error } = await supabase.functions.invoke("delete-account", {
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+        },
+      });
 
       if (error) {
         console.error("Failed to delete account:", error);
